@@ -1,0 +1,24 @@
+name: CI build & test
+
+on:
+  push:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+
+      - uses: actions/checkout@v1
+
+      - name: "Setup .NET"
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+
+      - name: "Build"
+        run: dotnet build
