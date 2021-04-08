@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Tasks.Api.Data;
 
 namespace Tasks.Api
 {
@@ -14,6 +16,11 @@ namespace Tasks.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationContext>(options =>
+            {
+                options.UseNpgsql(_configuration.GetConnectionString("TasksDb"));
+            });
+
             services.AddControllers();
         }
 
