@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Tasks.Api.Data;
 using Tasks.Api.Services;
 
@@ -33,6 +34,22 @@ namespace Tasks.Api
                     options.RequireHttpsMetadata = false;
                 });
 
+
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "MyApi",
+                    Description = "Api for tasks",
+                    Version = "v1",
+                    Contact = new OpenApiContact()
+                    {
+                        Email = "inozpavel@mail.ru",
+                        Name = "Pavel Inozemtsev",
+                    }
+                });
+            });
+
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddScoped<UnitOfWork>();
@@ -48,6 +65,13 @@ namespace Tasks.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.RoutePrefix = "";
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "TasksApi");
+            });
 
             app.UseRouting();
 
