@@ -1,3 +1,5 @@
+using System.Reflection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -5,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Tasks.Api.Data;
+using Tasks.Api.Services;
 
 namespace Tasks.Api
 {
@@ -21,6 +24,21 @@ namespace Tasks.Api
                 options.UseNpgsql(_configuration.GetConnectionString("TasksDb"));
             });
 
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    options.Authority = "https://localhost:3000";
+                    options.TokenValidationParameters.ValidateAudience = false;
+                    options.RequireHttpsMetadata = false;
+                });
+
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            services.AddScoped<UnitOfWork>();
+
+            services.AddTransient<RoomService>();
+
             services.AddControllers();
         }
 
@@ -32,6 +50,9 @@ namespace Tasks.Api
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
