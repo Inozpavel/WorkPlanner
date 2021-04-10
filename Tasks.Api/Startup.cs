@@ -78,6 +78,8 @@ namespace Tasks.Api
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseMiddleware<ExceptionMiddleware>();
+
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }

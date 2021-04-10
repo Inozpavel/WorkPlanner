@@ -9,7 +9,7 @@ using Tasks.Api.Services;
 namespace Tasks.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/rooms")]
     public class RoomController : ControllerBase
     {
         private readonly RoomService _roomService;
@@ -17,10 +17,26 @@ namespace Tasks.Api.Controllers
         public RoomController(RoomService roomService) => _roomService = roomService;
 
         [Authorize]
-        [HttpPost("rooms")]
+        [HttpPost]
         public async Task<ActionResult> Create(RoomRequest request)
         {
             await _roomService.CreateRoom(request, GetUserId());
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpPut]
+        public async Task<ActionResult> Update(RoomRequest request, Guid roomId)
+        {
+            await _roomService.UpdateRoom(request, roomId, GetUserId());
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpDelete]
+        public async Task<ActionResult> Delete(Guid roomId)
+        {
+            await _roomService.DeleteRoom(roomId, GetUserId());
             return Ok();
         }
 
