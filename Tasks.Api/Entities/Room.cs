@@ -7,13 +7,11 @@ namespace Tasks.Api.Entities
     {
         public Guid RoomId { get; set; }
 
-        public Guid OwnerId { get; set; }
-
         public string RoomName { get; set; }
 
         public string? RoomDescription { get; set; }
 
-        public DateTime CreationDate { get; set; }
+        public DateTime CreationDate { get; set; } = DateTime.Now;
 
         public List<UserInRoom> UsersInRoom { get; set; }
     }

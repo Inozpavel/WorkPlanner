@@ -56,15 +56,19 @@ namespace Tasks.Api
 
             services.AddTransient<RoomService>();
 
+            services.AddTransient<DatabaseInitializer>();
+
             services.AddControllers();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseInitializer databaseInitializer)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            databaseInitializer.Initialize();
 
             app.UseSwagger();
             app.UseSwaggerUI(options =>

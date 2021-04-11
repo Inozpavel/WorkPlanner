@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Tasks.Api.Entities
 {
@@ -9,6 +8,8 @@ namespace Tasks.Api.Entities
 
         public Guid UserId { get; set; }
 
-        public List<RoomRole> RoomRoles { get; set; }
+        public RoomRole RoomRole { get; set; }
+
+        public Guid RoomRoleId { get; set; }
     }
 }
