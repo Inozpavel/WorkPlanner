@@ -11,7 +11,11 @@ namespace Tasks.Api.Data
 
         protected Repository(ApplicationContext context) => _context = context;
 
-        public async Task Create(T element) => await _context.Set<T>().AddAsync(element);
+        public async Task<T> Create(T element)
+        {
+            var addedElement = await _context.Set<T>().AddAsync(element);
+            return addedElement.Entity;
+        }
 
         public Task<T> Find(Expression<Func<T, bool>> expression) => _context.Set<T>().FirstOrDefaultAsync(expression);
 

@@ -6,7 +6,7 @@ namespace Tasks.Api.Data
 {
     public interface IRepository<T> where T : class
     {
-        public Task Create(T element);
+        public Task<T> Create(T element);
 
         public Task<T> Find(Expression<Func<T, bool>> expression);
 
