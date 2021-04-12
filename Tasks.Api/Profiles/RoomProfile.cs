@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Tasks.Api.DTOs;
 using Tasks.Api.Entities;
-using Tasks.Api.ViewModel;
+using Tasks.Api.ViewModels;
 
 namespace Tasks.Api.Profiles
 {

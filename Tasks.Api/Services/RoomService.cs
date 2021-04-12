@@ -7,7 +7,7 @@ using Tasks.Api.Data;
 using Tasks.Api.DTOs;
 using Tasks.Api.Entities;
 using Tasks.Api.Exceptions;
-using Tasks.Api.ViewModel;
+using Tasks.Api.ViewModels;
 
 namespace Tasks.Api.Services
 {
@@ -47,8 +47,8 @@ namespace Tasks.Api.Services
             if (room == null)
                 throw new NotFoundException("Room with given id was not found!");
 
-            if (!await CheckUserHasRole(roomId, userId, Roles.Creator) ||
-                !await CheckUserHasRole(roomId, userId, Roles.Administrator))
+            if (!(await CheckUserHasRole(roomId, userId, Roles.Creator) ||
+                  await CheckUserHasRole(roomId, userId, Roles.Administrator)))
                 throw new AccessRightException("The user has insufficient rights");
 
             room = _mapper.Map(request, room);
@@ -72,17 +72,24 @@ namespace Tasks.Api.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        private async Task<bool> CheckUserHasRole(Guid roomId, Guid userId, string role) =>
+        public async Task<bool> CheckUserHasRole(Guid roomId, Guid userId, string role) =>
             await _unitOfWork.RoomRepository.FindUserInRoomWithRole(roomId, userId, role) != null;
 
-        public async Task<IEnumerable<Room>> FindRoomsForUser(Guid userId) =>
-            await _unitOfWork.RoomRepository.FindRoomsForUser(userId);
+        public async Task<IEnumerable<RoomViewModel>> FindRoomsForUser(Guid userId)
+        {
+            var rooms = await _unitOfWork.RoomRepository.FindRoomsForUser(userId);
+            return _mapper.Map<IEnumerable<RoomViewModel>>(rooms);
+        }
 
         public async Task<Room?> FindRoomWithUsers(Guid roomId) =>
             await _unitOfWork.RoomRepository.FindRoomWithUsers(roomId);
 
-        public async Task<Room?> FindById(Guid roomId) =>
-            await _unitOfWork.RoomRepository.Find(x => x.RoomId == roomId);
+        public async Task<RoomViewModel?> FindById(Guid roomId)
+        {
+            var room = await _unitOfWork.RoomRepository.Find(x => x.RoomId == roomId);
+            return _mapper.Map<RoomViewModel>(room);
+        }
+
 
         public async Task JoinUserToRoom(Guid roomId, Guid userId)
         {

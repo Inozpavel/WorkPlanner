@@ -4,30 +4,29 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Tasks.Api.DTOs;
-using Tasks.Api.Entities;
-using Tasks.Api.Services;
-using Tasks.Api.ViewModel;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using Tasks.Api.DTOs;
+using Tasks.Api.Services;
+using Tasks.Api.ViewModels;
 
 namespace Tasks.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("[controller]/rooms")]
+    [Route("api/[controller]")]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "If user is unauthorized")]
-    public class RoomController : ControllerBase
+    public class RoomsController : ControllerBase
     {
         private readonly RoomService _roomService;
 
-        public RoomController(RoomService roomService) => _roomService = roomService;
+        public RoomsController(RoomService roomService) => _roomService = roomService;
 
         [HttpGet]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status204NoContent, "If user hasn`t any rooms")]
-        public async Task<ActionResult<IEnumerable<Room>>> AllRoomsForUser()
+        public async Task<ActionResult<IEnumerable<RoomViewModel>>> AllRoomsForUser()
         {
             var rooms = await _roomService.FindRoomsForUser(GetUserId());
             if (!rooms.Any())
@@ -47,7 +46,7 @@ namespace Tasks.Api.Controllers
 
         [HttpPost]
         [SwaggerResponse(StatusCodes.Status201Created)]
-        public async Task<ActionResult> Create(RoomRequest request)
+        public async Task<CreatedAtActionResult> Create(RoomRequest request)
         {
             var createdRoom = await _roomService.CreateRoom(request, GetUserId());
             return CreatedAtAction(nameof(Find), new {roomId = createdRoom.RoomId}, createdRoom);
