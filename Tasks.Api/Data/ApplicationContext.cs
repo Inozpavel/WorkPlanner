@@ -15,6 +15,7 @@ namespace Tasks.Api.Data
 
         public DbSet<RoomRole> RoomRoles { get; set; }
 
+        public DbSet<RoomTask> RoomTasks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

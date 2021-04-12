@@ -14,5 +14,7 @@ namespace Tasks.Api.Entities
         public DateTime CreationDate { get; set; } = DateTime.Now;
 
         public List<UserInRoom> UsersInRoom { get; set; }
+
+        public List<RoomTask> RoomTasks { get; set; }
     }
 }
