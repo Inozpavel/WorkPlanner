@@ -55,8 +55,10 @@ namespace Tasks.Api
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddScoped<UnitOfWork>();
-
+            services.AddScoped<UserService>();
+            
             services.AddTransient<RoomService>();
+            services.AddTransient<RoomTaskService>();
 
             services.AddTransient<DatabaseInitializer>();
 
