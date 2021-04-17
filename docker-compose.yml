@@ -1,0 +1,50 @@
+﻿version: "3.1"
+
+services:
+
+  postgres_db:
+    image: library/postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/postgres_data
+      - TZ=Europe/Moscow
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      timeout: 3s
+      interval: 2s
+      retries: 30
+
+  identity_server:
+    image: inozpavel/workplanneridentity
+    restart: always
+    environment:
+      - TZ=Europe/Moscow
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings:Identity=Host=postgres_db;Port=5432;Database=Identity;Username=postgres;Password=postgres
+      - SwaggerApp:Origin=http://localhost:2000
+      - SwaggerApp:Secret=SwaggerAppSecret
+      - IssuerUri=identity_server
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    ports:
+      - "3000:80"
+
+  tasks:
+    image: inozpavel/workplannertasksapi
+    restart: always
+    environment:
+      - TZ=Europe/Moscow
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings:TasksDb=Host=postgres_db;Port=5432;Database=Stores;Username=postgres;Password=postgres
+      - IdentityServer:Authority=http://identity_server
+      - IdentityServer:TokenUrl=http://localhost:3000/connect/token
+      - IdentityServer:SwaggerAppSecret=SwaggerAppSecret
+    ports:
+      - "2000:80"
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+      identity_server:
+        condition: service_started

@@ -30,7 +30,7 @@ namespace IdentityServer
                     config.Password.RequireUppercase = false;
                 }).AddEntityFrameworkStores<ApplicationContext>();
 
-            services.AddIdentityServer()
+            services.AddIdentityServer(options => { options.IssuerUri = _configuration["IssuerUri"]; })
                 .AddInMemoryApiScopes(Config.ApiScopes)
                 .AddInMemoryClients(Config.GetConfiguredClients(_configuration))
                 .AddAspNetIdentity<User>()

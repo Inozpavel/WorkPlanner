@@ -4,6 +4,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer", "IdentityS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tasks.Api", "Tasks.Api\Tasks.Api.csproj", "{73435E4E-F00F-406F-B2D5-84D5F325CAB4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{E185E3F2-D4C4-4DC7-B5C9-2D348127DE1B}"
+ProjectSection(SolutionItems) = preProject
+	docker-compose.yml = docker-compose.yml
+	.gitignore = .gitignore
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,9 +20,15 @@ Global
 		{8D38C792-8B88-431D-A3C4-9FBF28FF00E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D38C792-8B88-431D-A3C4-9FBF28FF00E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D38C792-8B88-431D-A3C4-9FBF28FF00E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D38C792-8B88-431D-A3C4-9FBF28FF00E8}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{73435E4E-F00F-406F-B2D5-84D5F325CAB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{73435E4E-F00F-406F-B2D5-84D5F325CAB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73435E4E-F00F-406F-B2D5-84D5F325CAB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73435E4E-F00F-406F-B2D5-84D5F325CAB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73435E4E-F00F-406F-B2D5-84D5F325CAB4}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8D38C792-8B88-431D-A3C4-9FBF28FF00E8} = {E185E3F2-D4C4-4DC7-B5C9-2D348127DE1B}
+		{73435E4E-F00F-406F-B2D5-84D5F325CAB4} = {E185E3F2-D4C4-4DC7-B5C9-2D348127DE1B}
 	EndGlobalSection
 EndGlobal
