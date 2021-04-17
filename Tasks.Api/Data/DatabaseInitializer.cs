@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Tasks.Api.Entities;
 
 namespace Tasks.Api.Data
@@ -11,8 +12,8 @@ namespace Tasks.Api.Data
 
         public void Initialize()
         {
+            _database.Database.Migrate();
             EnsureRolesAdded();
-
             _database.SaveChanges();
         }
 

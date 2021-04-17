@@ -68,6 +68,6 @@ namespace Tasks.Api.Controllers
             return Accepted();
         }
 
-        private Guid GetUserId() => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        private Guid GetUserId() => Guid.Parse(User.FindFirstValue("sub"));
     }
 }

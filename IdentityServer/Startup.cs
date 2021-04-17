@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace IdentityServer
 {
@@ -29,22 +30,43 @@ namespace IdentityServer
                     config.Password.RequireUppercase = false;
                 }).AddEntityFrameworkStores<ApplicationContext>();
 
-
-            services.AddIdentityServer(options => { })
-                .AddInMemoryApiScopes(Config.GetApiScopes())
-                .AddInMemoryClients(Config.GetClients())
+            services.AddIdentityServer()
+                .AddInMemoryApiScopes(Config.ApiScopes)
+                .AddInMemoryClients(Config.GetConfiguredClients(_configuration))
                 .AddAspNetIdentity<User>()
                 .AddDeveloperSigningCredential();
+
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "IdentityApi",
+                    Version = "v1",
+                    Description = "IdentityApi"
+                });
+            });
+
+            services.AddTransient<DatabaseInitializer>();
 
             services.AddControllers();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseInitializer initializer)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            initializer.Initialize();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(options =>
+            {
+                options.RoutePrefix = "";
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityApi");
+            });
 
             app.UseRouting();
 

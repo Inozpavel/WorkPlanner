@@ -1,13 +1,46 @@
 ﻿using System.Collections.Generic;
+using IdentityModel;
+using IdentityServer4;
 using IdentityServer4.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace IdentityServer
 {
     public static class Config
     {
-        public static IEnumerable<Client> GetClients() =>
+        public static IEnumerable<ApiScope> ApiScopes =>
+            new List<ApiScope>
+            {
+                new("TaskAPI"),
+                new("AccountAPI"),
+                new("IdentityServer"),
+                new(IdentityServerConstants.StandardScopes.OpenId),
+                new(IdentityServerConstants.StandardScopes.Profile),
+            };
+
+        public static IEnumerable<Client> GetConfiguredClients(IConfiguration configuration) =>
             new List<Client>
             {
+                new()
+                {
+                    ClientId = "SwaggerApp",
+                    ClientSecrets =
+                    {
+                        new Secret(configuration["SwaggerApp:Secret"].ToSha256())
+                    },
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    AllowedCorsOrigins =
+                    {
+                        configuration["SwaggerApp:Origin"]
+                    },
+                    RequireClientSecret = false,
+                    AllowedScopes =
+                    {
+                        "IdentityServer",
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                    }
+                },
                 new()
                 {
                     ClientId = "MobileApp",
@@ -15,18 +48,11 @@ namespace IdentityServer
                     RequireClientSecret = false,
                     AllowedScopes =
                     {
-                        "TaskAPI"
+                        "TaskAPI",
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile
                     }
-                }
+                },
             };
-
-        public static IEnumerable<ApiScope> GetApiScopes()
-        {
-            return new List<ApiScope>
-            {
-                new("TaskAPI"),
-                new("AccountAPI"),
-            };
-        }
     }
 }
