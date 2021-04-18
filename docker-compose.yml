@@ -1,4 +1,4 @@
-﻿version: "3.8"
+﻿version: "2.1"
 
 services:
 
@@ -11,40 +11,55 @@ services:
       - TZ=Europe/Moscow
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      timeout: 3s
-      interval: 2s
+      timeout: 4s
+      interval: 1s
       retries: 30
 
-  identity_server:
+  identity.api:
     image: inozpavel/workplanneridentity
     restart: always
     environment:
       - TZ=Europe/Moscow
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings:Identity=Host=postgres_db;Port=5432;Database=Identity;Username=postgres;Password=postgres
-      - SwaggerApp:Origin=http://localhost:2000
       - SwaggerApp:Secret=SwaggerAppSecret
-      - IssuerUri=identity_server
+      - SwaggerApp:Origin=http://localhost:8000
+      - Gateway:Origin=http://localhost:5000
+      - IssuerUri=identity.api
     depends_on:
       postgres_db:
         condition: service_healthy
     ports:
-      - "3000:80"
+      - "9000:80"
 
-  tasks:
+  tasks.api:
     image: inozpavel/workplannertasksapi
     restart: always
     environment:
       - TZ=Europe/Moscow
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings:TasksDb=Host=postgres_db;Port=5432;Database=Stores;Username=postgres;Password=postgres
-      - IdentityServer:Authority=http://identity_server
-      - IdentityServer:TokenUrl=http://localhost:3000/connect/token
       - IdentityServer:SwaggerAppSecret=SwaggerAppSecret
+      - IdentityServer:Authority=http://identity.api
+      - IdentityServer:TokenUrl=http://localhost:9000/connect/token
     ports:
-      - "2000:80"
+      - "8000:80"
     depends_on:
       postgres_db:
-          condition: service_healthy
-      identity_server:
-          condition: service_started
+        condition: service_healthy
+      identity.api:
+        condition: service_started
+
+  gateway:
+   image: inozpavel/workplannergateway
+   restart: always
+   environment:
+     - TZ=Europe/Moscow
+     - ASPNETCORE_ENVIRONMENT=Production
+     - IdentityServer:Authority=http://identity.api
+     - IdentityServer:TokenUrl=http://localhost:9000/connect/token
+   ports:
+     - "5000:80"
+   depends_on:
+     - identity.api
+     - tasks.api

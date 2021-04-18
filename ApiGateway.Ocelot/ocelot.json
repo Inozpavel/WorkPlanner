@@ -1,0 +1,82 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost"
+  },
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8000
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/api/{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Update",
+        "Delete"
+      ],
+      "SwaggerKey": "TasksApi"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8000
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/api/tasks/{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Update",
+        "Delete"
+      ],
+      "SwaggerKey": "TasksApi"
+    },
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9000
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/identity/{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Update"
+      ],
+      "SwaggerKey": "UsersApi"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "TasksApi",
+      "Config": [
+        {
+          "Name": "Tasks API",
+          "Version": "v1",
+          "Url": "http://localhost:8000/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "UsersApi",
+      "Config": [
+        {
+          "Name": "Users API",
+          "Version": "v1",
+          "Url": "http://localhost:9000/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}

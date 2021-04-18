@@ -23,7 +23,7 @@ namespace IdentityServer
             {
                 new()
                 {
-                    ClientId = "SwaggerApp",
+                    ClientId = "TasksSwaggerApp",
                     ClientSecrets =
                     {
                         new Secret(configuration["SwaggerApp:Secret"].ToSha256())
@@ -32,6 +32,22 @@ namespace IdentityServer
                     AllowedCorsOrigins =
                     {
                         configuration["SwaggerApp:Origin"]
+                    },
+                    RequireClientSecret = true,
+                    AllowedScopes =
+                    {
+                        "IdentityServer",
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                    }
+                },
+                new()
+                {
+                    ClientId = "Gateway",
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    AllowedCorsOrigins =
+                    {
+                        configuration["Gateway:Origin"]
                     },
                     RequireClientSecret = false,
                     AllowedScopes =

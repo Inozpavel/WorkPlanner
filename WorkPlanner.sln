@@ -10,6 +10,8 @@ ProjectSection(SolutionItems) = preProject
 	.gitignore = .gitignore
 EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway.Ocelot", "ApiGateway.Ocelot\ApiGateway.Ocelot.csproj", "{7EF74333-9A1F-4B9D-BC50-9F5E12F63913}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,9 +28,14 @@ Global
 		{73435E4E-F00F-406F-B2D5-84D5F325CAB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73435E4E-F00F-406F-B2D5-84D5F325CAB4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{73435E4E-F00F-406F-B2D5-84D5F325CAB4}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7EF74333-9A1F-4B9D-BC50-9F5E12F63913}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EF74333-9A1F-4B9D-BC50-9F5E12F63913}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EF74333-9A1F-4B9D-BC50-9F5E12F63913}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EF74333-9A1F-4B9D-BC50-9F5E12F63913}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8D38C792-8B88-431D-A3C4-9FBF28FF00E8} = {E185E3F2-D4C4-4DC7-B5C9-2D348127DE1B}
 		{73435E4E-F00F-406F-B2D5-84D5F325CAB4} = {E185E3F2-D4C4-4DC7-B5C9-2D348127DE1B}
+		{7EF74333-9A1F-4B9D-BC50-9F5E12F63913} = {E185E3F2-D4C4-4DC7-B5C9-2D348127DE1B}
 	EndGlobalSection
 EndGlobal

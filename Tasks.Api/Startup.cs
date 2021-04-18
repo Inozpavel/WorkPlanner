@@ -113,7 +113,7 @@ namespace Tasks.Api
 
                 options.DocumentTitle = "TasksApi";
 
-                options.OAuthClientId("SwaggerApp");
+                options.OAuthClientId("TasksSwaggerApp");
                 options.OAuthClientSecret(_configuration["IdentityServer:SwaggerAppSecret"]);
             });
 
