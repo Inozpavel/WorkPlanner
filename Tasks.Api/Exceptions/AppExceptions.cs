@@ -7,6 +7,8 @@ namespace Tasks.Api.Exceptions
         public const string RoomNotFoundException = "Room with given id was not found!";
 
         public const string TaskNotFoundException = "Task with given id was not found!";
+        
+        public const string RoleNotFoundException = "Role with given id was not found!";
 
         private const string InsufficientRightsException = "Insufficient rights! ";
 
