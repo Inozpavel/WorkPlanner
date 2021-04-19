@@ -47,7 +47,7 @@ namespace IdentityServer
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     AllowedCorsOrigins =
                     {
-                        configuration["Gateway:Origin"]
+                        "http://localhost:5000"
                     },
                     RequireClientSecret = false,
                     AllowedScopes =

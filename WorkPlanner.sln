@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{E185E3
 ProjectSection(SolutionItems) = preProject
 	docker-compose.yml = docker-compose.yml
 	.gitignore = .gitignore
+	docker-compose.production.yml = docker-compose.production.yml
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway.Ocelot", "ApiGateway.Ocelot\ApiGateway.Ocelot.csproj", "{7EF74333-9A1F-4B9D-BC50-9F5E12F63913}"

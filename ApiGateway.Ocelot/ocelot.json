@@ -16,25 +16,7 @@
       "UpstreamHttpMethod": [
         "Get",
         "Post",
-        "Update",
-        "Delete"
-      ],
-      "SwaggerKey": "TasksApi"
-    },
-    {
-      "DownstreamPathTemplate": "/api/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 8000
-        }
-      ],
-      "UpstreamPathTemplate": "/gateway/api/tasks/{everything}",
-      "UpstreamHttpMethod": [
-        "Get",
-        "Post",
-        "Update",
+        "Put",
         "Delete"
       ],
       "SwaggerKey": "TasksApi"
@@ -52,7 +34,7 @@
       "UpstreamHttpMethod": [
         "Get",
         "Post",
-        "Update"
+        "Put"
       ],
       "SwaggerKey": "UsersApi"
     }

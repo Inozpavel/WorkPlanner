@@ -88,8 +88,9 @@ namespace Tasks.Api
             services.AddScoped<UnitOfWork>();
 
             services.AddScoped<UserService>();
-            services.AddTransient<RoomService>();
-            services.AddTransient<RoomTaskService>();
+            services.AddScoped<RoomService>();
+            services.AddScoped<RoomTaskService>();
+            services.AddScoped<RoleService>();
 
             services.AddTransient<DatabaseInitializer>();
 

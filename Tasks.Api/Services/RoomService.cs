@@ -48,10 +48,10 @@ namespace Tasks.Api.Services
             var room = await _unitOfWork.RoomRepository.Find(x => x.RoomId == roomId);
 
             if (room == null)
-                throw new NotFoundException("Room with given id was not found!");
+                throw new NotFoundApiException(AppExceptions.RoomNotFoundException);
 
             if (!await _userService.CheckUserHasAnyRole(roomId, userId, Roles.Creator, Roles.Administrator))
-                throw new AccessRightException("The user has insufficient rights");
+                throw new AccessRightApiException(AppExceptions.CreatorOrAdministratorOnlyCanDoThisException);
 
             room = _mapper.Map(request, room);
 
@@ -61,14 +61,13 @@ namespace Tasks.Api.Services
 
         public async Task DeleteRoom(Guid roomId, Guid userId)
         {
-            var room = await _unitOfWork.RoomRepository.Find(x =>
-                x.RoomId == roomId);
+            var room = await _unitOfWork.RoomRepository.Find(x => x.RoomId == roomId);
 
             if (room == null)
-                throw new NotFoundException("Room with given id was not found!");
+                throw new NotFoundApiException(AppExceptions.RoomNotFoundException);
 
             if (!await _userService.CheckUserIsInRole(roomId, userId, Roles.Creator))
-                throw new AccessRightException("Insufficient access rights! Only owner can delete room!");
+                throw new AccessRightApiException(AppExceptions.CreatorOnlyCanPerformThisActionException);
 
             _unitOfWork.RoomRepository.Delete(room);
             await _unitOfWork.SaveChangesAsync();
@@ -88,13 +87,13 @@ namespace Tasks.Api.Services
             var room = await _unitOfWork.RoomRepository.Find(x => x.RoomId == roomId);
             return _mapper.Map<RoomViewModel>(room);
         }
-        
+
         public async Task JoinUserToRoom(Guid roomId, Guid userId)
         {
             var room = await _unitOfWork.RoomRepository.FindRoomWithUsers(roomId);
 
             if (room == null)
-                throw new NotFoundException("Incorrect link!");
+                throw new NotFoundApiException(AppExceptions.IncorrectUrlException);
 
             if (room.UsersInRoom.Any(x => x.UserId == userId))
                 return;

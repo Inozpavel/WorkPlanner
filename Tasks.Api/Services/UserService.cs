@@ -23,7 +23,7 @@ namespace Tasks.Api.Services
         }
 
         public async Task<bool> CheckUserIsInRole(Guid roomId, Guid userId, string roleName) =>
-            await _unitOfWork.RoomRepository.FindUserInRoomWithRole(roomId, userId, roleName) != null;
+            await _unitOfWork.RoomRepository.FindRoomWithUserInRole(roomId, userId, roleName) != null;
 
         public async Task<bool> CheckUserIsInRoom(Guid roomId, Guid userId)
         {
