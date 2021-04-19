@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Http;
 namespace Tasks.Api.Exceptions
 {
     [Serializable]
-    public class NotFoundException : ApiException
+    public class NotFoundApiException : ApiException
     {
-        public NotFoundException(string message) : base(message)
+        public NotFoundApiException(string message) : base(message)
         {
         }
 

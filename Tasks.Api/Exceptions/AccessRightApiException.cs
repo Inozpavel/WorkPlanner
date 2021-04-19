@@ -2,9 +2,9 @@
 
 namespace Tasks.Api.Exceptions
 {
-    public class AccessRightException : ApiException
+    public class AccessRightApiException : ApiException
     {
-        public AccessRightException(string message) : base(message)
+        public AccessRightApiException(string message) : base(message)
         {
         }
 

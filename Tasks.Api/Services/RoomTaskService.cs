@@ -42,13 +42,13 @@ namespace Tasks.Api.Services
             var room = await _unitOfWork.RoomRepository.Find(r => r.RoomId == request.RoomId);
 
             if (room == null)
-                throw new NotFoundException("Room with given id was not found!");
+                throw new NotFoundApiException(AppExceptions.RoomNotFoundException);
 
             if (!await _userService.CheckUserIsInRoom(request.RoomId, userId))
-                throw new AccessRightException("The user is not a member of the room!");
+                throw new AccessRightApiException(AppExceptions.NotRoomMemberException);
 
             if (!await _userService.CheckUserHasAnyRole(request.RoomId, userId, Roles.Creator, Roles.Administrator))
-                throw new AccessRightException("Only owner or administrator can create task!");
+                throw new AccessRightApiException(AppExceptions.CreatorOrAdministratorOnlyCanDoThisException);
 
             var task = _mapper.Map<RoomTask>(request);
             task.TaskCreatorId = userId;
@@ -65,13 +65,13 @@ namespace Tasks.Api.Services
             var task = await _unitOfWork.RoomTaskRepository.Find(x => x.RoomTaskId == taskId);
 
             if (task == null)
-                throw new NotFoundException("Task with given id was not found!");
+                throw new NotFoundApiException(AppExceptions.TaskNotFoundException);
 
             if (!await _userService.CheckUserIsInRoom(task.RoomId, userId))
-                throw new AccessRightException("The user does not have access to this task");
+                throw new AccessRightApiException(AppExceptions.NoAccessToTaskException);
 
             if (!await _userService.CheckUserHasAnyRole(task.RoomId, userId, Roles.Creator, Roles.Administrator))
-                throw new AccessRightException("Only owner or administrator can update task!");
+                throw new AccessRightApiException(AppExceptions.CreatorOrAdministratorOnlyCanDoThisException);
 
             task = _mapper.Map(request, task);
             _unitOfWork.RoomTaskRepository.Update(task);
@@ -84,13 +84,13 @@ namespace Tasks.Api.Services
             var task = await _unitOfWork.RoomTaskRepository.Find(x => x.RoomTaskId == taskId);
 
             if (task == null)
-                throw new NotFoundException("Task with given id was not found!");
+                throw new NotFoundApiException(AppExceptions.TaskNotFoundException);
 
             if (!await _userService.CheckUserIsInRoom(task.RoomId, userId))
-                throw new AccessRightException("The user does not have access to this task");
+                throw new AccessRightApiException(AppExceptions.NotRoomMemberException);
 
             if (!await _userService.CheckUserHasAnyRole(task.RoomId, userId, Roles.Creator, Roles.Administrator))
-                throw new AccessRightException("Only owner or administrator can delete task!");
+                throw new AccessRightApiException(AppExceptions.CreatorOrAdministratorOnlyCanDoThisException);
 
             _unitOfWork.RoomTaskRepository.Delete(task);
 
