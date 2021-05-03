@@ -1,13 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace IdentityServer.DTOs
+namespace IdentityServer.ViewModels
 {
-    public class RegisterUserRequest
+    public class RegisterViewModel
     {
+        [Required]
+        [StringLength(50)]
         public string FirstName { get; set; }
 
+        [Required]
+        [StringLength(50)]
         public string LastName { get; set; }
 
+        [Required]
+        [StringLength(50)]
         public string Patronymic { get; set; }
 
         public string PhoneNumber { get; set; }
@@ -18,5 +24,9 @@ namespace IdentityServer.DTOs
 
         [Required]
         public string Password { get; set; }
+        
+        [Required]
+        [Compare("Password")]
+        public string ConfirmPassword { get; set; }
     }
 }
