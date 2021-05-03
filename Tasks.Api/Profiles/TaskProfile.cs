@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Tasks.Api.DTOs;
 using Tasks.Api.Entities;
 using Tasks.Api.ViewModels;
 
@@ -9,7 +8,7 @@ namespace Tasks.Api.Profiles
     {
         public TaskProfile()
         {
-            CreateMap<TaskRequest, RoomTask>()
+            CreateMap<AddTaskViewModel, RoomTask>()
                 .ForMember(dest => dest.RoomId, cfg => cfg.Ignore());
 
             CreateMap<RoomTask, TaskViewModel>();

@@ -12,8 +12,6 @@ namespace Tasks.Api.ViewModels
 
         public string Details { get; set; }
 
-        public Guid RoomId { get; set; }
-
         public DateTime TaskCreationTime { get; set; } = DateTime.Now;
 
         public Guid TaskCreatorId { get; set; }

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Tasks.Api.Data;
-using Tasks.Api.DTOs;
 using Tasks.Api.Entities;
 using Tasks.Api.Exceptions;
 using Tasks.Api.ViewModels;
@@ -26,15 +25,15 @@ namespace Tasks.Api.Services
             _userService = userService;
         }
 
-        public async Task<RoomViewModel> CreateRoom(RoomRequest request, Guid userId)
+        public async Task<RoomViewModel> CreateRoom(AddRoomViewModel viewModel, Guid userId)
         {
-            var room = _mapper.Map<Room>(request);
+            var room = _mapper.Map<Room>(viewModel);
             room.UsersInRoom = new List<UserInRoom>
             {
                 new()
                 {
                     UserId = userId,
-                    RoomRole = await _unitOfWork.RoomRoleRepository.Find(x => x.RoomRoleName == Roles.Creator)
+                    RoomRole = await _unitOfWork.RoomRoleRepository.FindWithName(Roles.Creator)
                 }
             };
 
@@ -43,7 +42,7 @@ namespace Tasks.Api.Services
             return _mapper.Map<RoomViewModel>(createdRoom);
         }
 
-        public async Task UpdateRoom(RoomRequest request, Guid roomId, Guid userId)
+        public async Task UpdateRoom(AddRoomViewModel viewModel, Guid roomId, Guid userId)
         {
             var room = await _unitOfWork.RoomRepository.Find(x => x.RoomId == roomId);
 
@@ -53,7 +52,7 @@ namespace Tasks.Api.Services
             if (!await _userService.CheckUserHasAnyRole(roomId, userId, Roles.Creator, Roles.Administrator))
                 throw new AccessRightApiException(AppExceptions.CreatorOrAdministratorOnlyCanDoThisException);
 
-            room = _mapper.Map(request, room);
+            room = _mapper.Map(viewModel, room);
 
             _unitOfWork.RoomRepository.Update(room);
             await _unitOfWork.SaveChangesAsync();
@@ -101,7 +100,7 @@ namespace Tasks.Api.Services
             room.UsersInRoom.Add(new UserInRoom
             {
                 UserId = userId,
-                RoomRole = await _unitOfWork.RoomRoleRepository.Find(x => x.RoomRoleName == Roles.Member)
+                RoomRole = await _unitOfWork.RoomRoleRepository.FindWithName(Roles.Member)
             });
             await _unitOfWork.SaveChangesAsync();
         }

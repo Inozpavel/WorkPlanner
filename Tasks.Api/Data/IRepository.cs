@@ -8,7 +8,7 @@ namespace Tasks.Api.Data
     {
         public Task<T> Create(T element);
 
-        public Task<T> Find(Expression<Func<T, bool>> expression);
+        public Task<T?> Find(Expression<Func<T, bool>> expression);
 
         public void Update(T element);
 

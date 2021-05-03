@@ -1,12 +1,10 @@
 using System;
 
-namespace Tasks.Api.DTOs
+namespace Tasks.Api.ViewModels
 {
-    public class UpdateUserRoleRequest
+    public class UpdateUserRoleViewModel
     {
         public Guid UserId { get; set; }
-
-        public Guid RoomId { get; set; }
 
         public Guid RoleId { get; set; }
     }

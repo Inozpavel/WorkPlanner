@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using Tasks.Api.DTOs;
 using Tasks.Api.Services;
 using Tasks.Api.ViewModels;
 
@@ -15,26 +13,14 @@ namespace Tasks.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/room/{roomId:guid}/[controller]")]
     public class TasksController : ControllerBase
     {
         private readonly RoomTaskService _roomTaskService;
 
         public TasksController(RoomTaskService roomTaskService) => _roomTaskService = roomTaskService;
 
-        [HttpGet("{taskId:guid}")]
-        [SwaggerResponse(StatusCodes.Status200OK)]
-        [SwaggerResponse(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<TaskViewModel>> Find(Guid taskId)
-        {
-            var task = await _roomTaskService.FindTask(taskId);
-            if (task == null)
-                return NotFound();
-            return Ok(task);
-        }
-
-
-        [HttpGet("room/{roomId:guid}")]
+        [HttpGet]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status204NoContent)]
         [ProducesDefaultResponseType]
@@ -46,30 +32,40 @@ namespace Tasks.Api.Controllers
             return Ok(tasks);
         }
 
+        [HttpGet("{taskId:guid}")]
+        [SwaggerResponse(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<TaskViewModel>> Find(Guid roomId, Guid taskId)
+        {
+            var task = await _roomTaskService.FindTask(roomId, taskId);
+            if (task == null)
+                return NotFound();
+            return Ok(task);
+        }
+
         [HttpPost]
         [SwaggerResponse(StatusCodes.Status201Created)]
-        public async Task<CreatedAtActionResult> Create(TaskRequest request)
+        public async Task<CreatedAtActionResult> Create(Guid roomId, AddTaskViewModel viewModel)
         {
-            var addedTask = await _roomTaskService.CreateTask(request, GetUserId());
+            var addedTask =
+                await _roomTaskService.CreateTask(roomId, viewModel, UserService.GetCurrentUserId(HttpContext));
             return CreatedAtAction(nameof(Find), new {taskId = addedTask.RoomTaskId}, addedTask);
         }
 
         [HttpPut("{taskId:guid}")]
         [SwaggerResponse(StatusCodes.Status202Accepted)]
-        public async Task<ActionResult> Update(Guid taskId, TaskRequest request)
+        public async Task<ActionResult> Update(Guid roomId, Guid taskId, AddTaskViewModel viewModel)
         {
-            await _roomTaskService.UpdateTask(taskId, request, GetUserId());
+            await _roomTaskService.UpdateTask(roomId, taskId, viewModel, UserService.GetCurrentUserId(HttpContext));
             return Accepted();
         }
 
         [HttpDelete("{taskId:guid}")]
         [SwaggerResponse(StatusCodes.Status202Accepted)]
-        public async Task<ActionResult> Delete(Guid taskId)
+        public async Task<ActionResult> Delete(Guid roomId, Guid taskId)
         {
-            await _roomTaskService.DeleteTask(taskId, GetUserId());
+            await _roomTaskService.DeleteTask(roomId, taskId, UserService.GetCurrentUserId(HttpContext));
             return Accepted();
         }
-
-        private Guid GetUserId() => Guid.Parse(User.FindFirstValue("sub"));
     }
 }

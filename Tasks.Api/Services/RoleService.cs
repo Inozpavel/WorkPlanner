@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Tasks.Api.Data;
-using Tasks.Api.DTOs;
 using Tasks.Api.Entities;
 using Tasks.Api.Exceptions;
 using Tasks.Api.ViewModels;
@@ -34,28 +33,28 @@ namespace Tasks.Api.Services
             return _mapper.Map<IEnumerable<RoleViewModel>>(roles);
         }
 
-        public async Task UpdateRoleForUser(UpdateUserRoleRequest request, Guid senderId)
+        public async Task UpdateRoleForUser(Guid roomId, UpdateUserRoleViewModel viewModel, Guid senderId)
         {
-            if (await _roomService.FindById(request.RoomId) == null)
+            if (await _roomService.FindById(roomId) == null)
                 throw new NotFoundApiException(AppExceptions.RoomNotFoundException);
 
-            if (!await _userService.CheckUserIsInRoom(request.RoomId, senderId))
+            if (!await _userService.CheckUserIsInRoom(roomId, senderId))
                 throw new AccessRightApiException(AppExceptions.NotRoomMemberException);
 
-            if (!await _userService.CheckUserIsInRoom(request.RoomId, request.UserId))
+            if (!await _userService.CheckUserIsInRoom(roomId, viewModel.UserId))
                 throw new AccessRightApiException(AppExceptions.NotRoomMemberException);
 
-            if (!await _userService.CheckUserIsInRole(request.RoomId, senderId, Roles.Creator))
+            if (!await _userService.CheckUserIsInRole(roomId, senderId, Roles.Creator))
                 throw new AccessRightApiException(AppExceptions.CreatorOnlyCanPerformThisActionException);
 
-            if (request.UserId == senderId)
+            if (viewModel.UserId == senderId)
                 return;
 
-            var role = await _unitOfWork.RoomRoleRepository.Find(x => x.RoomRoleId == request.RoleId);
+            var role = await _unitOfWork.RoomRoleRepository.Find(x => x.RoomRoleId == viewModel.RoleId);
             if (role == null)
                 throw new NotFoundApiException(AppExceptions.RoleNotFoundException);
 
-            var user = await _unitOfWork.RoomRepository.FindUserInRoom(request.RoomId, request.UserId);
+            var user = await _unitOfWork.RoomRepository.FindUserInRoom(roomId, viewModel.UserId);
             if (user != null)
                 user.RoomRole = role;
             await _unitOfWork.SaveChangesAsync();

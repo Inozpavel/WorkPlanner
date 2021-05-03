@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Tasks.Api.Data;
-using Tasks.Api.DTOs;
 using Tasks.Api.Entities;
 using Tasks.Api.Exceptions;
 using Tasks.Api.ViewModels;
@@ -31,26 +30,29 @@ namespace Tasks.Api.Services
             return _mapper.Map<IEnumerable<TaskViewModel>>(tasks);
         }
 
-        public async Task<TaskViewModel?> FindTask(Guid taskId)
+        public async Task<TaskViewModel?> FindTask(Guid roomId, Guid taskId)
         {
             var task = await _unitOfWork.RoomTaskRepository.Find(x => x.RoomTaskId == taskId);
+            if (task?.RoomId != roomId)
+                throw new NotFoundApiException(AppExceptions.TaskInRoomNotFoundException);
+
             return _mapper.Map<TaskViewModel>(task);
         }
 
-        public async Task<TaskViewModel> CreateTask(TaskRequest request, Guid userId)
+        public async Task<TaskViewModel> CreateTask(Guid roomId, AddTaskViewModel viewModel, Guid userId)
         {
-            var room = await _unitOfWork.RoomRepository.Find(r => r.RoomId == request.RoomId);
+            var room = await _unitOfWork.RoomRepository.Find(r => r.RoomId == roomId);
 
             if (room == null)
                 throw new NotFoundApiException(AppExceptions.RoomNotFoundException);
 
-            if (!await _userService.CheckUserIsInRoom(request.RoomId, userId))
+            if (!await _userService.CheckUserIsInRoom(roomId, userId))
                 throw new AccessRightApiException(AppExceptions.NotRoomMemberException);
 
-            if (!await _userService.CheckUserHasAnyRole(request.RoomId, userId, Roles.Creator, Roles.Administrator))
+            if (!await _userService.CheckUserHasAnyRole(roomId, userId, Roles.Creator, Roles.Administrator))
                 throw new AccessRightApiException(AppExceptions.CreatorOrAdministratorOnlyCanDoThisException);
 
-            var task = _mapper.Map<RoomTask>(request);
+            var task = _mapper.Map<RoomTask>(viewModel);
             task.TaskCreatorId = userId;
             task.Room = room;
 
@@ -60,12 +62,15 @@ namespace Tasks.Api.Services
             return _mapper.Map<TaskViewModel>(addedTask);
         }
 
-        public async Task UpdateTask(Guid taskId, TaskRequest request, Guid userId)
+        public async Task UpdateTask(Guid roomId, Guid taskId, AddTaskViewModel viewModel, Guid userId)
         {
             var task = await _unitOfWork.RoomTaskRepository.Find(x => x.RoomTaskId == taskId);
 
             if (task == null)
                 throw new NotFoundApiException(AppExceptions.TaskNotFoundException);
+
+            if (task.RoomId != roomId)
+                throw new NotFoundApiException(AppExceptions.TaskInRoomNotFoundException);
 
             if (!await _userService.CheckUserIsInRoom(task.RoomId, userId))
                 throw new AccessRightApiException(AppExceptions.NoAccessToTaskException);
@@ -73,18 +78,21 @@ namespace Tasks.Api.Services
             if (!await _userService.CheckUserHasAnyRole(task.RoomId, userId, Roles.Creator, Roles.Administrator))
                 throw new AccessRightApiException(AppExceptions.CreatorOrAdministratorOnlyCanDoThisException);
 
-            task = _mapper.Map(request, task);
+            task = _mapper.Map(viewModel, task);
             _unitOfWork.RoomTaskRepository.Update(task);
 
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task DeleteTask(Guid taskId, Guid userId)
+        public async Task DeleteTask(Guid roomId, Guid taskId, Guid userId)
         {
             var task = await _unitOfWork.RoomTaskRepository.Find(x => x.RoomTaskId == taskId);
 
             if (task == null)
                 throw new NotFoundApiException(AppExceptions.TaskNotFoundException);
+
+            if (task.RoomId != roomId)
+                throw new NotFoundApiException(AppExceptions.TaskInRoomNotFoundException);
 
             if (!await _userService.CheckUserIsInRoom(task.RoomId, userId))
                 throw new AccessRightApiException(AppExceptions.NotRoomMemberException);

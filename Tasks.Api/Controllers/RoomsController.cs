@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using Tasks.Api.DTOs;
 using Tasks.Api.Services;
 using Tasks.Api.ViewModels;
 
@@ -28,7 +26,7 @@ namespace Tasks.Api.Controllers
         [SwaggerResponse(StatusCodes.Status204NoContent, "If user hasn`t any rooms")]
         public async Task<ActionResult<IEnumerable<RoomViewModel>>> AllRoomsForUser()
         {
-            var rooms = await _roomService.FindRoomsForUser(GetUserId());
+            var rooms = await _roomService.FindRoomsForUser(UserService.GetCurrentUserId(HttpContext));
             if (!rooms.Any())
                 return NoContent();
             return Ok(rooms);
@@ -38,17 +36,17 @@ namespace Tasks.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status404NotFound, "If id is incorrect", typeof(ProblemDetails))]
         [SwaggerResponse(StatusCodes.Status403Forbidden, "If user has insufficient rights", typeof(ProblemDetails))]
-        public async Task<ActionResult> Update(RoomRequest request, Guid roomId)
+        public async Task<ActionResult> Update(AddRoomViewModel viewModel, Guid roomId)
         {
-            await _roomService.UpdateRoom(request, roomId, GetUserId());
+            await _roomService.UpdateRoom(viewModel, roomId, UserService.GetCurrentUserId(HttpContext));
             return Ok();
         }
 
         [HttpPost]
         [SwaggerResponse(StatusCodes.Status201Created)]
-        public async Task<CreatedAtActionResult> Create(RoomRequest request)
+        public async Task<CreatedAtActionResult> Create(AddRoomViewModel viewModel)
         {
-            var createdRoom = await _roomService.CreateRoom(request, GetUserId());
+            var createdRoom = await _roomService.CreateRoom(viewModel, UserService.GetCurrentUserId(HttpContext));
             return CreatedAtAction(nameof(Find), new {roomId = createdRoom.RoomId}, createdRoom);
         }
 
@@ -58,7 +56,7 @@ namespace Tasks.Api.Controllers
         [SwaggerResponse(StatusCodes.Status403Forbidden, "If user has insufficient rights", typeof(ProblemDetails))]
         public async Task<ActionResult> Delete(Guid roomId)
         {
-            await _roomService.DeleteRoom(roomId, GetUserId());
+            await _roomService.DeleteRoom(roomId, UserService.GetCurrentUserId(HttpContext));
             return Ok();
         }
 
@@ -78,10 +76,8 @@ namespace Tasks.Api.Controllers
         [SwaggerResponse(StatusCodes.Status404NotFound, "If link is incorrect", typeof(ProblemDetails))]
         public async Task<ActionResult> JoinRoom(Guid roomId)
         {
-            await _roomService.JoinUserToRoom(roomId, GetUserId());
+            await _roomService.JoinUserToRoom(roomId, UserService.GetCurrentUserId(HttpContext));
             return Accepted();
         }
-
-        private Guid GetUserId() => Guid.Parse(User.FindFirstValue("sub"));
     }
 }

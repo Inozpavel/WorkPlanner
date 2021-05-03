@@ -48,7 +48,7 @@ namespace IdentityServer
             });
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            
+
             services.AddTransient<DatabaseInitializer>();
 
             services.AddControllers();

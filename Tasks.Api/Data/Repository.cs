@@ -17,7 +17,8 @@ namespace Tasks.Api.Data
             return addedElement.Entity;
         }
 
-        public Task<T> Find(Expression<Func<T, bool>> expression) => _context.Set<T>().FirstOrDefaultAsync(expression);
+        public async Task<T?> Find(Expression<Func<T, bool>> expression) =>
+            await _context.Set<T>().FirstOrDefaultAsync(expression);
 
         public void Update(T element) => _context.Set<T>().Update(element);
 
