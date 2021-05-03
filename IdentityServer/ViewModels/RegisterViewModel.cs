@@ -6,11 +6,11 @@ namespace IdentityServer.ViewModels
     {
         [Required]
         [StringLength(50)]
-        public string FirstName { get; set; }
+        public string LastName { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string LastName { get; set; }
+        public string FirstName { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -24,7 +24,7 @@ namespace IdentityServer.ViewModels
 
         [Required]
         public string Password { get; set; }
-        
+
         [Required]
         [Compare("Password")]
         public string ConfirmPassword { get; set; }

@@ -1,3 +1,4 @@
+using System.Reflection;
 using IdentityServer.Data;
 using IdentityServer.Entities;
 using Microsoft.AspNetCore.Builder;
@@ -46,6 +47,8 @@ namespace IdentityServer
                 });
             });
 
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            
             services.AddTransient<DatabaseInitializer>();
 
             services.AddControllers();
