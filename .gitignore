@@ -3,7 +3,8 @@ obj/
 .idea/
 /packages/
 riderModule.iml
+/PrivateSSHKey.ppk
 /_ReSharper.Caches/
 /IdentityServer/tempkey.jwk
 /WorkPlanner.sln.DotSettings.user
-/PrivateSSHKey.ppk
+/IdentityServer/secretsettings.json

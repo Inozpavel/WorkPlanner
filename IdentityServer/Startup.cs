@@ -3,6 +3,7 @@ using IdentityServer.Data;
 using IdentityServer.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,11 +26,13 @@ namespace IdentityServer
                 })
                 .AddIdentity<User, Role>(config =>
                 {
-                    config.Password.RequiredLength = 6;
                     config.User.RequireUniqueEmail = true;
+                    config.Password.RequiredLength = 6;
                     config.Password.RequireDigit = true;
                     config.Password.RequireUppercase = false;
-                }).AddEntityFrameworkStores<ApplicationContext>();
+                    config.SignIn.RequireConfirmedEmail = true;
+                }).AddEntityFrameworkStores<ApplicationContext>()
+                .AddDefaultTokenProviders();
 
             services.AddIdentityServer(options => { options.IssuerUri = _configuration["IssuerUri"]; })
                 .AddInMemoryApiScopes(Config.ApiScopes)
@@ -50,6 +53,7 @@ namespace IdentityServer
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddTransient<DatabaseInitializer>();
+            services.AddSingleton<EmailService>();
 
             services.AddControllers();
         }
