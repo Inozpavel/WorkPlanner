@@ -24,13 +24,13 @@ namespace IdentityServer
                     ClientId = "SwaggerApp",
                     ClientSecrets =
                     {
-                        new Secret(configuration["SwaggerApp:Secret"].ToSha256())
+                        new Secret(configuration["Clients:SwaggerApp:Secret"].ToSha256())
                     },
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     AllowedCorsOrigins =
                     {
-                        configuration["SwaggerApp:Origin1"],
-                        configuration["SwaggerApp:Origin2"]
+                        configuration["Clients:SwaggerApp:Origin1"],
+                        configuration["Clients:SwaggerApp:Origin2"]
                     },
                     RequireClientSecret = true,
                     AllowedScopes =
@@ -45,9 +45,13 @@ namespace IdentityServer
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     AllowedCorsOrigins =
                     {
-                        "http://localhost:5000"
+                        configuration["Clients:Gateway:Origin"]
                     },
-                    RequireClientSecret = false,
+                    RequireClientSecret = true,
+                    ClientSecrets =
+                    {
+                        new Secret(configuration["Clients:Gateway:Secret"].ToSha256())
+                    },
                     AllowedScopes =
                     {
                         "IdentityServer",
@@ -62,9 +66,9 @@ namespace IdentityServer
                     AllowedScopes =
                     {
                         "TaskAPI",
+                        "FullName",
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Email,
-                        "FullName"
+                        IdentityServerConstants.StandardScopes.Email
                     }
                 },
             };

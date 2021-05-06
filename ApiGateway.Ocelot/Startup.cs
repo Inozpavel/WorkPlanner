@@ -82,7 +82,8 @@ namespace ApiGateway.Ocelot
             {
                 options.OAuthConfigObject = new OAuthConfigObject
                 {
-                    ClientId = "Gateway"
+                    ClientId = _configuration["IdentityServer:ClientId"],
+                    ClientSecret = _configuration["IdentityServer:Secret"]
                 };
             });
             app.UseRouting();

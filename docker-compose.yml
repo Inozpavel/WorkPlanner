@@ -1,4 +1,4 @@
-﻿version: "3.8"
+﻿version: "3.1"
 
 services:
 
@@ -6,9 +6,9 @@ services:
     image: library/postgres:latest
     restart: always
     environment:
+      - TZ=Europe/Moscow
       - POSTGRES_PASSWORD=postgres
       - PGDATA=/postgres_data
-      - TZ=Europe/Moscow
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       timeout: 4s
@@ -16,22 +16,39 @@ services:
       retries: 30
     ports:
       - "5433:5432"
-      - 
-  identity.api:
-    image: inozpavel/workplanneridentity
+
+  identity_server:
+    image: inozpavel/workplanneridentityserver
     restart: always
     environment:
       - TZ=Europe/Moscow
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings:Identity=Host=postgres_db;Port=5432;Database=Identity;Username=postgres;Password=postgres
-      - SwaggerApp:Secret=SwaggerAppSecret
-      - SwaggerApp:Origin=http://localhost:8000
-      - IssuerUri=identity.api
+      - Clients:Gateway:Origin=http://localhost:5000
+      - Clients:Gateway:Secret=GatewaySecret
+      - IssuerUri=identity_server
     depends_on:
       postgres_db:
         condition: service_healthy
     ports:
       - "9000:80"
+
+  users.api:
+    image: inozpavel/workplannerusersapi
+    restart: always
+    environment:
+      - TZ=Europe/Moscow
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings:Identity=Host=postgres_db;Port=5432;Database=Identity;Username=postgres;Password=postgres
+      - IdentityServer:Authority=http://identity_server
+      - IdentityServer:TokenUrl=http://localhost:9000/connect/token
+      - IdentityServer:ClientId=SwaggerApp
+      - IdentityServer:Secret=SwaggerAppSecret
+      depends_on:
+        postgres_db:
+          condition: service_healthy
+      ports:
+        - "8001:80"
 
   tasks.api:
     image: inozpavel/workplannertasksapi
@@ -40,9 +57,10 @@ services:
       - TZ=Europe/Moscow
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings:TasksDb=Host=postgres_db;Port=5432;Database=Stores;Username=postgres;Password=postgres
-      - IdentityServer:SwaggerAppSecret=SwaggerAppSecret
-      - IdentityServer:Authority=http://identity.api
+      - IdentityServer:Authority=http://identity_server
       - IdentityServer:TokenUrl=http://localhost:9000/connect/token
+      - IdentityServer:ClientId=SwaggerApp
+      - IdentityServer:Secret=SwaggerAppSecret
     ports:
       - "8000:80"
     depends_on:
@@ -52,15 +70,18 @@ services:
         condition: service_started
 
   gateway:
-   image: inozpavel/workplannergateway
-    restart: always
-    environment:
-      - TZ=Europe/Moscow
-      - ASPNETCORE_ENVIRONMENT=Production
-      - IdentityServer:Authority=http://identity.api
-      - IdentityServer:TokenUrl=http://localhost:9000/connect/token
-    ports:
-      - "5000:80"
-    depends_on:
-      - identity.api
-      - tasks.api
+    image: inozpavel/workplannergateway
+      restart: always
+      environment:
+        - TZ=Europe/Moscow
+        - ASPNETCORE_ENVIRONMENT=Production
+        - IdentityServer:Authority=http://identity_server
+        - IdentityServer:TokenUrl=http://localhost:9000/connect/token
+        - IdentityServer:ClientId=Gateway
+        - IdentityServer:Secret=GatewaySecret
+      ports:
+        - "5000:80"
+      depends_on:
+        - identity_server
+        - tasks.api
+        - users.api

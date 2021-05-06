@@ -125,8 +125,8 @@ namespace Users.Api
 
                 options.DocumentTitle = "TasksApi";
 
-                options.OAuthClientId("SwaggerApp");
-                options.OAuthClientSecret(_configuration["IdentityServer:SwaggerAppSecret"]);
+                options.OAuthClientId(_configuration["IdentityServer:ClientId"]);
+                options.OAuthClientSecret(_configuration["IdentityServer:Secret"]);
             });
 
             app.UseRouting();

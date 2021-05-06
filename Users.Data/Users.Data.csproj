@@ -2,6 +2,12 @@
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>WorkPlanner.Users.Data</PackageId>
+		<Authors>Inozpavel</Authors>
+		<Title>Microsoft identity entities</Title>
+		<RepositoryUrl>https://github.com/Inozpavel/WorkPlanner</RepositoryUrl>
+		<RepositoryType>GitHub</RepositoryType>
 	</PropertyGroup>
 
 	<ItemGroup>
