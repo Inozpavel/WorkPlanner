@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tasks.Api.ViewModels
+namespace Tasks.Api.ViewModels.TaskViewModels
 {
     public class TaskViewModel
     {

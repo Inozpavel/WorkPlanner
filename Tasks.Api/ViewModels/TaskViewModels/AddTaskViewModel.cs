@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Tasks.Api.ViewModels
+namespace Tasks.Api.ViewModels.TaskViewModels
 {
     public class AddTaskViewModel
     {

@@ -5,7 +5,7 @@ using AutoMapper;
 using Tasks.Api.Data;
 using Tasks.Api.Entities;
 using Tasks.Api.Exceptions;
-using Tasks.Api.ViewModels;
+using Tasks.Api.ViewModels.TaskViewModels;
 
 namespace Tasks.Api.Services
 {

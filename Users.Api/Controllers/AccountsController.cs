@@ -16,7 +16,7 @@ namespace Users.Api.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        
+
         private readonly UserService _userService;
 
         public AccountsController(UserService userService, UserManager<User> userManager)
@@ -77,7 +77,7 @@ namespace Users.Api.Controllers
         }
 
         [Authorize]
-        [HttpPost("[action]")]
+        [HttpPut("[action]")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "If token is invalid", typeof(ProblemDetails))]
         public async Task<ActionResult> Profile(UpdateProfileViewModel viewModel)

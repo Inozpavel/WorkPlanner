@@ -1,6 +1,6 @@
 using System;
 
-namespace Tasks.Api.ViewModels
+namespace Tasks.Api.ViewModels.RoleViewModels
 {
     public class UpdateUserRoleViewModel
     {

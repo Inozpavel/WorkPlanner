@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Tasks.Api.Entities;
-using Tasks.Api.ViewModels;
+using Tasks.Api.ViewModels.TaskViewModels;
 
 namespace Tasks.Api.Profiles
 {

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Tasks.Api.Services;
-using Tasks.Api.ViewModels;
+using Tasks.Api.ViewModels.TaskViewModels;
 
 namespace Tasks.Api.Controllers
 {
