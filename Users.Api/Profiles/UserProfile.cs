@@ -10,6 +10,7 @@ namespace Users.Api.Profiles
         {
             CreateMap<RegisterViewModel, User>()
                 .ForMember(dst => dst.UserName, options => options.MapFrom(src => src.Email));
+            CreateMap<UpdateProfileViewModel, User>();
         }
     }
 }

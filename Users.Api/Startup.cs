@@ -96,15 +96,17 @@ namespace Users.Api
                 })
                 .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = "http://localhost:9000";
+                    options.Authority = _configuration["IdentityServer:Authority"];
                     options.RequireHttpsMetadata = false;
                 });
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddTransient<DatabaseInitializer>();
-
+            
+            services.AddScoped<UserService>();
             services.AddSingleton<EmailService>();
+            
             services.AddControllers();
         }
 
@@ -134,6 +136,7 @@ namespace Users.Api
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }

@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Swashbuckle.AspNetCore.Annotations;
 using Users.Api.Services;
 using Users.Api.ViewModels;
@@ -19,20 +15,13 @@ namespace Users.Api.Controllers
     [Route("api/[controller]")]
     public class AccountsController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-
-        private readonly EmailService _emailService;
-
-        private readonly IMapper _mapper;
-
         private readonly UserManager<User> _userManager;
+        
+        private readonly UserService _userService;
 
-        public AccountsController(IConfiguration configuration, EmailService emailService, IMapper mapper,
-            UserManager<User> userManager)
+        public AccountsController(UserService userService, UserManager<User> userManager)
         {
-            _configuration = configuration;
-            _emailService = emailService;
-            _mapper = mapper;
+            _userService = userService;
             _userManager = userManager;
         }
 
@@ -41,35 +30,8 @@ namespace Users.Api.Controllers
         [SwaggerResponse(StatusCodes.Status400BadRequest, "If data is invalid", typeof(ValidationProblemDetails))]
         public async Task<ActionResult> RegisterAsync(RegisterViewModel viewModel)
         {
-            var user = _mapper.Map<User>(viewModel);
-            var result = await _userManager.CreateAsync(user, viewModel.Password);
-
-            if (result.Succeeded)
-            {
-                await SendConfirmationMail(viewModel.Email);
-                return Ok();
-            }
-
-            var validationProblemDetails = new ValidationProblemDetails();
-            List<string> passwordErrors = new();
-            List<string> emailErrors = new();
-            List<string> otherErrors = new();
-
-            result.Errors.Select(x => x.Description).ToList().ForEach(x =>
-            {
-                if (x.Contains("password", StringComparison.InvariantCultureIgnoreCase))
-                    passwordErrors.Add(x);
-                else if (x.Contains("email", StringComparison.InvariantCultureIgnoreCase))
-                    emailErrors.Add(x);
-                else
-                    otherErrors.Add(x);
-            });
-
-            AddErrorsForKeyIfNotEmpty(validationProblemDetails, "Email", emailErrors);
-            AddErrorsForKeyIfNotEmpty(validationProblemDetails, "Password", passwordErrors);
-            AddErrorsForKeyIfNotEmpty(validationProblemDetails, "Other", otherErrors);
-
-            return BadRequest(validationProblemDetails);
+            await _userService.Register(viewModel);
+            return Ok();
         }
 
         [HttpGet("confirm-email/{userId}/{token}")]
@@ -110,42 +72,18 @@ namespace Users.Api.Controllers
                     Detail = "Already confirmed"
                 });
 
-            await SendConfirmationMail(registeredEmail);
+            await _userService.SendConfirmationMail(registeredEmail);
             return Ok();
         }
 
         [Authorize]
         [HttpPost("[action]")]
-        public ActionResult Profile()
+        [SwaggerResponse(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "If token is invalid", typeof(ProblemDetails))]
+        public async Task<ActionResult> Profile(UpdateProfileViewModel viewModel)
         {
+            await _userService.UpdateProfileAsync(UserService.GetCurrentUserId(HttpContext), viewModel);
             return Ok();
-        }
-
-        private static void AddErrorsForKeyIfNotEmpty(ValidationProblemDetails details, string key, List<string> errors)
-        {
-            if (!errors.Any())
-                return;
-            details.Errors[key] = errors.ToArray();
-        }
-
-        private async Task<bool> SendConfirmationMail(string email)
-        {
-            try
-            {
-                var createdUser = await _userManager.FindByEmailAsync(email);
-                string token =
-                    Uri.EscapeDataString(await _userManager.GenerateEmailConfirmationTokenAsync(createdUser));
-                string callbackUrl =
-                    $"{_configuration["Gateway:Origin"]}/gateway/identity/confirm-email/{createdUser.Id}/{token}";
-
-                await _emailService.SendEmailAsync(email, "Email confirmation",
-                    string.Format(await System.IO.File.ReadAllTextAsync("mail.html"), callbackUrl));
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
     }
 }

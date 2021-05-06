@@ -68,7 +68,8 @@ namespace IdentityServer
                         "TaskAPI",
                         "FullName",
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Email
+                        IdentityServerConstants.StandardScopes.Email,
+                        IdentityServerConstants.StandardScopes.Phone
                     }
                 },
             };
@@ -79,6 +80,7 @@ namespace IdentityServer
             {
                 new IdentityResources.Email(),
                 new IdentityResources.OpenId(),
+                new IdentityResources.Phone(),
                 new("FullName", new List<string>
                 {
                     "full_name"

@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Users.Api.ViewModels
 {
-    public class RegisterViewModel
+    public class UpdateProfileViewModel
     {
         [Required]
         [StringLength(50)]
@@ -18,16 +18,5 @@ namespace Users.Api.ViewModels
 
         [Phone]
         public string PhoneNumber { get; set; }
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        public string Password { get; set; }
-
-        [Required]
-        [Compare("Password")]
-        public string PasswordConfirmation { get; set; }
     }
 }
