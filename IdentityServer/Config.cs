@@ -14,8 +14,6 @@ namespace IdentityServer
                 new("TaskAPI"),
                 new("AccountAPI"),
                 new("IdentityServer"),
-                new(IdentityServerConstants.StandardScopes.OpenId),
-                new(IdentityServerConstants.StandardScopes.Profile),
             };
 
         public static IEnumerable<Client> GetConfiguredClients(IConfiguration configuration) =>
@@ -23,7 +21,7 @@ namespace IdentityServer
             {
                 new()
                 {
-                    ClientId = "TasksSwaggerApp",
+                    ClientId = "SwaggerApp",
                     ClientSecrets =
                     {
                         new Secret(configuration["SwaggerApp:Secret"].ToSha256())
@@ -31,14 +29,14 @@ namespace IdentityServer
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     AllowedCorsOrigins =
                     {
-                        configuration["SwaggerApp:Origin"]
+                        configuration["SwaggerApp:Origin1"],
+                        configuration["SwaggerApp:Origin2"]
                     },
                     RequireClientSecret = true,
                     AllowedScopes =
                     {
                         "IdentityServer",
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
                     }
                 },
                 new()
@@ -54,7 +52,6 @@ namespace IdentityServer
                     {
                         "IdentityServer",
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
                     }
                 },
                 new()
@@ -66,9 +63,23 @@ namespace IdentityServer
                     {
                         "TaskAPI",
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile
+                        IdentityServerConstants.StandardScopes.Email,
+                        "FullName"
                     }
                 },
             };
+
+        public static IEnumerable<IdentityResource> GetIdentityResources()
+        {
+            return new List<IdentityResource>
+            {
+                new IdentityResources.Email(),
+                new IdentityResources.OpenId(),
+                new("FullName", new List<string>
+                {
+                    "full_name"
+                })
+            };
+        }
     }
 }

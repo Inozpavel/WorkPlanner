@@ -3,7 +3,7 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
-namespace IdentityServer
+namespace Users.Api.Services
 {
     public class EmailService
     {
@@ -21,7 +21,6 @@ namespace IdentityServer
                 IsBodyHtml = true
             };
             emailMessage.To.Add(email);
-
 
             var client = new SmtpClient
             {

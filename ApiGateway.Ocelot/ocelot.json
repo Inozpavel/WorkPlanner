@@ -9,10 +9,28 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
+          "Port": 8001
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/users-api/{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ],
+      "SwaggerKey": "UsersApi"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
           "Port": 8000
         }
       ],
-      "UpstreamPathTemplate": "/gateway/api/{everything}",
+      "UpstreamPathTemplate": "/gateway/rooms-api/{everything}",
       "UpstreamHttpMethod": [
         "Get",
         "Post",
@@ -35,8 +53,7 @@
         "Get",
         "Post",
         "Put"
-      ],
-      "SwaggerKey": "UsersApi"
+      ]
     }
   ],
   "SwaggerEndPoints": [
@@ -56,7 +73,7 @@
         {
           "Name": "Users API",
           "Version": "v1",
-          "Url": "http://localhost:9000/swagger/v1/swagger.json"
+          "Url": "http://localhost:8001/swagger/v1/swagger.json"
         }
       ]
     }

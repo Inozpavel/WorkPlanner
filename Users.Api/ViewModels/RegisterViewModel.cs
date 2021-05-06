@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace IdentityServer.ViewModels
+namespace Users.Api.ViewModels
 {
     public class RegisterViewModel
     {
@@ -27,6 +27,6 @@ namespace IdentityServer.ViewModels
 
         [Required]
         [Compare("Password")]
-        public string ConfirmPassword { get; set; }
+        public string PasswordConfirmation { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace IdentityServer.Data
+namespace Users.Api.Data
 {
     public class DatabaseInitializer
     {

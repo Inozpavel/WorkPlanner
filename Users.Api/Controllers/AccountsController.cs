@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using IdentityServer.Entities;
-using IdentityServer.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Swashbuckle.AspNetCore.Annotations;
+using Users.Api.Services;
+using Users.Api.ViewModels;
+using Users.Data.Entities;
 
-namespace IdentityServer.Controllers
+namespace Users.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("api/[controller]")]
     public class AccountsController : ControllerBase
     {
         private readonly IConfiguration _configuration;
@@ -34,7 +36,7 @@ namespace IdentityServer.Controllers
             _userManager = userManager;
         }
 
-        [HttpPost]
+        [HttpPost("[action]")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "If data is invalid", typeof(ValidationProblemDetails))]
         public async Task<ActionResult> RegisterAsync(RegisterViewModel viewModel)
@@ -70,11 +72,11 @@ namespace IdentityServer.Controllers
             return BadRequest(validationProblemDetails);
         }
 
-        [HttpGet("/confirm-email/{userId}/{token}")]
+        [HttpGet("confirm-email/{userId}/{token}")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status404NotFound)]
         [SwaggerResponse(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> ConfirmEmail(string userId, string token)
+        public async Task<ActionResult> ConfirmEmailAsync(string userId, string token)
         {
             if (!Guid.TryParse(userId, out _))
                 return BadRequest("User id is not guid");
@@ -90,14 +92,7 @@ namespace IdentityServer.Controllers
             return Ok("Ok");
         }
 
-        private static void AddErrorsForKeyIfNotEmpty(ValidationProblemDetails details, string key, List<string> errors)
-        {
-            if (!errors.Any())
-                return;
-            details.Errors[key] = errors.ToArray();
-        }
-
-        [HttpGet("/resend-confirm-mail")]
+        [HttpGet("resend-confirm-mail")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "If email if not registered", typeof(ProblemDetails))]
         [SwaggerResponse(StatusCodes.Status409Conflict, "If email if already confirmed", typeof(ProblemDetails))]
@@ -117,6 +112,20 @@ namespace IdentityServer.Controllers
 
             await SendConfirmationMail(registeredEmail);
             return Ok();
+        }
+
+        [Authorize]
+        [HttpPost("[action]")]
+        public ActionResult Profile()
+        {
+            return Ok();
+        }
+
+        private static void AddErrorsForKeyIfNotEmpty(ValidationProblemDetails details, string key, List<string> errors)
+        {
+            if (!errors.Any())
+                return;
+            details.Errors[key] = errors.ToArray();
         }
 
         private async Task<bool> SendConfirmationMail(string email)

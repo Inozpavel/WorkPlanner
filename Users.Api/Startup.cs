@@ -4,15 +4,17 @@ using System.Reflection;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Tasks.Api.Data;
-using Tasks.Api.Services;
+using Users.Api.Data;
+using Users.Api.Services;
+using Users.Data.Entities;
 
-namespace Tasks.Api
+namespace Users.Api
 {
     public class Startup
     {
@@ -23,16 +25,19 @@ namespace Tasks.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationContext>(options =>
-            {
-                options.UseNpgsql(_configuration.GetConnectionString("TasksDb"));
-            });
-
-            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = _configuration["IdentityServer:Authority"];
-                    options.RequireHttpsMetadata = false;
-                });
+                    options.UseNpgsql(_configuration.GetConnectionString("Identity"));
+                })
+                .AddIdentity<User, Role>(config =>
+                {
+                    config.User.RequireUniqueEmail = true;
+                    config.Password.RequiredLength = 6;
+                    config.Password.RequireDigit = true;
+                    config.Password.RequireUppercase = false;
+                    config.SignIn.RequireConfirmedEmail = true;
+                })
+                .AddEntityFrameworkStores<ApplicationContext>()
+                .AddDefaultTokenProviders();
 
             services.AddSwaggerGen(options =>
             {
@@ -40,9 +45,9 @@ namespace Tasks.Api
 
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "RoomsApi",
-                    Description = "Service for managing rooms and tasks in rooms",
+                    Title = "IdentityApi",
                     Version = "v1",
+                    Description = "IdentityApi",
 
                     Contact = new OpenApiContact
                     {
@@ -83,28 +88,34 @@ namespace Tasks.Api
                 });
             });
 
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultAuthenticateScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
+                })
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = "http://localhost:9000";
+                    options.RequireHttpsMetadata = false;
+                });
+
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
-            services.AddScoped<UnitOfWork>();
-
-            services.AddScoped<UserService>();
-            services.AddScoped<RoomService>();
-            services.AddScoped<RoomTaskService>();
-            services.AddScoped<RoleService>();
 
             services.AddTransient<DatabaseInitializer>();
 
+            services.AddSingleton<EmailService>();
             services.AddControllers();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseInitializer databaseInitializer)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseInitializer initializer)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            databaseInitializer.Initialize();
+            initializer.Initialize();
 
             app.UseSwagger();
             app.UseSwaggerUI(options =>
@@ -122,8 +133,6 @@ namespace Tasks.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }

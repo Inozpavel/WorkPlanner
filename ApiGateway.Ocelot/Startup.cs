@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace ApiGateway.Ocelot
 {
@@ -77,7 +78,13 @@ namespace ApiGateway.Ocelot
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSwaggerForOcelotUI();
+            app.UseSwaggerForOcelotUI(options =>
+            {
+                options.OAuthConfigObject = new OAuthConfigObject
+                {
+                    ClientId = "Gateway"
+                };
+            });
             app.UseRouting();
 
             app.UseAuthentication();
