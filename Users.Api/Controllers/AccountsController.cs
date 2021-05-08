@@ -54,7 +54,7 @@ namespace Users.Api.Controllers
             return Ok("Ok");
         }
 
-        [HttpGet("resend-confirm-mail")]
+        [HttpGet("resend-confirmation-mail")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "If email if not registered", typeof(ProblemDetails))]
         [SwaggerResponse(StatusCodes.Status409Conflict, "If email if already confirmed", typeof(ProblemDetails))]

@@ -34,7 +34,6 @@ namespace Users.Api
                     config.Password.RequiredLength = 6;
                     config.Password.RequireDigit = true;
                     config.Password.RequireUppercase = false;
-                    config.SignIn.RequireConfirmedEmail = true;
                 })
                 .AddEntityFrameworkStores<ApplicationContext>()
                 .AddDefaultTokenProviders();
@@ -103,10 +102,10 @@ namespace Users.Api
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddTransient<DatabaseInitializer>();
-            
+
             services.AddScoped<UserService>();
             services.AddSingleton<EmailService>();
-            
+
             services.AddControllers();
         }
 

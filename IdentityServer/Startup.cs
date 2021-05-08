@@ -1,5 +1,4 @@
 using IdentityServer.Data;
-using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -22,17 +21,20 @@ namespace IdentityServer
                 {
                     options.UseNpgsql(_configuration.GetConnectionString("Identity"));
                 })
-                .AddIdentity<User, Role>().AddEntityFrameworkStores<ApplicationContext>();
+                .AddIdentity<User, Role>()
+                .AddEntityFrameworkStores<ApplicationContext>();
 
-            services.AddIdentityServer(options => { options.IssuerUri = _configuration["IssuerUri"]; })
+            services.AddIdentityServer(options =>
+                {
+                    options.IssuerUri = _configuration["IssuerUri"];
+                })
                 .AddInMemoryApiScopes(Config.ApiScopes)
                 .AddInMemoryClients(Config.GetConfiguredClients(_configuration))
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddProfileService<ProfileService>()
                 .AddAspNetIdentity<User>()
+                .AddProfileService<ProfileService>()
                 .AddDeveloperSigningCredential();
 
-            services.AddScoped<IProfileService, ProfileService>();
             services.AddControllers();
         }
 

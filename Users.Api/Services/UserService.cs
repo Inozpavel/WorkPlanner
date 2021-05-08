@@ -75,7 +75,7 @@ namespace Users.Api.Services
                 string token =
                     Uri.EscapeDataString(await _userManager.GenerateEmailConfirmationTokenAsync(createdUser));
                 string callbackUrl =
-                    $"{_configuration["Gateway:Origin"]}/gateway/identity/confirm-email/{createdUser.Id}/{token}";
+                    $"{_configuration["Gateway:Host"]}/{_configuration["Gateway:ConfirmMailRoute"]}/{createdUser.Id}/{token}";
 
                 await _emailService.SendEmailAsync(email, "Email confirmation",
                     string.Format(await File.ReadAllTextAsync("mail.html"), callbackUrl));
