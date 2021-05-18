@@ -43,7 +43,7 @@ namespace Tasks.Api.Controllers
         }
 
         [HttpPost]
-        [SwaggerResponse(StatusCodes.Status201Created)]
+        [SwaggerResponse(StatusCodes.Status201Created, Type = typeof(RoomViewModel))]
         public async Task<CreatedAtActionResult> Create(AddRoomViewModel viewModel)
         {
             var createdRoom = await _roomService.CreateRoom(viewModel, UserService.GetCurrentUserId(HttpContext));
@@ -71,13 +71,13 @@ namespace Tasks.Api.Controllers
             return Ok(room);
         }
 
-        [HttpGet("/joinroom/{roomId:guid}")]
-        [SwaggerResponse(StatusCodes.Status202Accepted)]
+        [HttpGet("join/{roomId:guid}")]
+        [SwaggerResponse(StatusCodes.Status200OK, type: typeof(RoomViewModel))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "If link is incorrect", typeof(ProblemDetails))]
         public async Task<ActionResult> JoinRoom(Guid roomId)
         {
-            await _roomService.JoinUserToRoom(roomId, UserService.GetCurrentUserId(HttpContext));
-            return Accepted();
+            var room = await _roomService.JoinUserToRoom(roomId, UserService.GetCurrentUserId(HttpContext));
+            return Ok(room);
         }
     }
 }

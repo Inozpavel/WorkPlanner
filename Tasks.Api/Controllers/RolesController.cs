@@ -11,19 +11,19 @@ using Tasks.Api.ViewModels.RoleViewModels;
 namespace Tasks.Api.Controllers
 {
     [ApiController]
-    [Route("api/rooms/{roomId:guid}/[controller]")]
+    [Route("api/rooms/")]
     public class RolesController : ControllerBase
     {
         private readonly RoleService _roleService;
 
         public RolesController(RoleService roleService) => _roleService = roleService;
 
-        [HttpGet("/[controller]")]
+        [HttpGet("[controller]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<string>>> AllRoles() => Ok(await _roleService.AllRoles());
 
         [Authorize]
-        [HttpPut]
+        [HttpPut("{roomId:guid}/[controller]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "If user is unauthorized")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "If id or role name is incorrect", typeof(ProblemDetails))]

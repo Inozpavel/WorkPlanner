@@ -87,15 +87,16 @@ namespace Tasks.Api.Services
             return _mapper.Map<RoomViewModel>(room);
         }
 
-        public async Task JoinUserToRoom(Guid roomId, Guid userId)
+        public async Task<RoomViewModel?> JoinUserToRoom(Guid roomId, Guid userId)
         {
             var room = await _unitOfWork.RoomRepository.FindRoomWithUsers(roomId);
 
             if (room == null)
                 throw new NotFoundApiException(AppExceptions.IncorrectUrlException);
-
+            
+            var mappedRoom = _mapper.Map<RoomViewModel>(room);
             if (room.UsersInRoom.Any(x => x.UserId == userId))
-                return;
+                return mappedRoom;
 
             room.UsersInRoom.Add(new UserInRoom
             {
@@ -103,6 +104,7 @@ namespace Tasks.Api.Services
                 RoomRole = await _unitOfWork.RoomRoleRepository.FindWithName(Roles.Member)
             });
             await _unitOfWork.SaveChangesAsync();
+            return mappedRoom;
         }
     }
 }
