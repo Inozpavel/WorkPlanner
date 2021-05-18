@@ -10,7 +10,7 @@ namespace Tasks.Api.Entities
 
         public string TaskContent { get; set; }
 
-        public string Details { get; set; }
+        public string? Details { get; set; }
 
         public Guid RoomId { get; set; }
 

@@ -6,7 +6,7 @@ namespace Tasks.Api.ViewModels.TaskViewModels
     public class AddTaskViewModel
     {
         [Required]
-        [MinLength(1)]
+        [StringLength(30, MinimumLength = 1)]
         public string TaskName { get; set; }
 
         [Required]
