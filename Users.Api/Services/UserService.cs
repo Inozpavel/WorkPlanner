@@ -5,12 +5,14 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Users.Api.Exceptions;
 using Users.Api.ViewModels;
+using Users.Data;
 using Users.Data.Entities;
 
 namespace Users.Api.Services
@@ -22,12 +24,14 @@ namespace Users.Api.Services
         private readonly EmailService _emailService;
 
         private readonly IMapper _mapper;
+        private readonly IPublishEndpoint _publishEndpoint;
 
         private readonly UserManager<User> _userManager;
 
-        public UserService(IConfiguration configuration, UserManager<User> userManager, EmailService emailService,
-            IMapper mapper)
+        public UserService(IPublishEndpoint publishEndpoint, IConfiguration configuration,
+            UserManager<User> userManager, EmailService emailService, IMapper mapper)
         {
+            _publishEndpoint = publishEndpoint;
             _configuration = configuration;
             _userManager = userManager;
             _emailService = emailService;
@@ -41,6 +45,7 @@ namespace Users.Api.Services
 
             if (result.Succeeded)
             {
+                await _publishEndpoint.Publish(_mapper.Map<UserRegistered>(user));
                 await SendConfirmationMail(viewModel.Email);
                 return;
             }

@@ -1,6 +1,7 @@
 using AutoMapper;
 using Tasks.Api.Entities;
 using Tasks.Api.ViewModels.RoleViewModels;
+using Users.Data;
 
 namespace Tasks.Api.Profiles
 {
@@ -8,7 +9,9 @@ namespace Tasks.Api.Profiles
     {
         public UserProfile()
         {
-            CreateMap<UserInRoom, UserWithRoleViewModel>();
+            CreateMap<UserInTheRoom, UserWithRoleViewModel>();
+
+            CreateMap<UserRegistered, User>();
         }
     }
 }

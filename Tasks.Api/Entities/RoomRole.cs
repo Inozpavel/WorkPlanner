@@ -11,6 +11,6 @@ namespace Tasks.Api.Entities
 
         public string? RoomRoleDescription { get; set; }
 
-        public List<UserInRoom> UserInRooms { get; set; }
+        public List<UserInTheRoom> UserInRooms { get; set; }
     }
 }

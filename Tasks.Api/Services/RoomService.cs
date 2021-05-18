@@ -28,7 +28,7 @@ namespace Tasks.Api.Services
         public async Task<RoomViewModel> CreateRoom(AddRoomViewModel viewModel, Guid userId)
         {
             var room = _mapper.Map<Room>(viewModel);
-            room.UsersInRoom = new List<UserInRoom>
+            room.UsersInRoom = new List<UserInTheRoom>
             {
                 new()
                 {
@@ -98,7 +98,7 @@ namespace Tasks.Api.Services
             if (room.UsersInRoom.Any(x => x.UserId == userId))
                 return mappedRoom;
 
-            room.UsersInRoom.Add(new UserInRoom
+            room.UsersInRoom.Add(new UserInTheRoom
             {
                 UserId = userId,
                 RoomRole = await _unitOfWork.RoomRoleRepository.FindWithName(Roles.Member)

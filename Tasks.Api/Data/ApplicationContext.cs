@@ -11,15 +11,18 @@ namespace Tasks.Api.Data
 
         public DbSet<Room> Rooms { get; set; }
 
-        public DbSet<UserInRoom> UsersInRoom { get; set; }
+        public DbSet<UserInTheRoom> UsersInRoom { get; set; }
 
         public DbSet<RoomRole> RoomRoles { get; set; }
 
         public DbSet<RoomTask> RoomTasks { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<UserInRoom>().HasKey(x => new {x.RoomId, x.UserId});
-        }
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<UserInTheRoom> UsersInTheRooms { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) => modelBuilder
+            .Entity<UserInTheRoom>()
+            .HasKey(x => new {x.RoomId, RoomUserId = x.UserId});
     }
 }

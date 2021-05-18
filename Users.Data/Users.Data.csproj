@@ -8,10 +8,11 @@
 		<Title>Microsoft identity entities</Title>
 		<RepositoryUrl>https://github.com/Inozpavel/WorkPlanner</RepositoryUrl>
 		<RepositoryType>GitHub</RepositoryType>
+		<PackageVersion>1.0.1</PackageVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.5" />
+	  <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.6" />
 	</ItemGroup>
 
 </Project>

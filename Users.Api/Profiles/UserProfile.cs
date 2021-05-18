@@ -1,5 +1,6 @@
 using AutoMapper;
 using Users.Api.ViewModels;
+using Users.Data;
 using Users.Data.Entities;
 
 namespace Users.Api.Profiles
@@ -10,7 +11,10 @@ namespace Users.Api.Profiles
         {
             CreateMap<RegisterViewModel, User>()
                 .ForMember(dst => dst.UserName, options => options.MapFrom(src => src.Email));
+            
             CreateMap<UpdateProfileViewModel, User>();
+            
+            CreateMap<User, UserRegistered>().ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id));
         }
     }
 }

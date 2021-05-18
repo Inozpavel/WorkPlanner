@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using IdentityServer4.AccessTokenValidation;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -107,6 +108,19 @@ namespace Users.Api
             services.AddSingleton<EmailService>();
 
             services.AddControllers();
+
+            services.AddMassTransit(x =>
+                x.UsingRabbitMq((context, configurator) =>
+                {
+                    configurator.Host(_configuration["MassTransit:Host"],
+                        _configuration["MassTransit:VirtualHost"], options =>
+                        {
+                            options.Username(_configuration["MassTransit:Username"]);
+                            options.Password(_configuration["MassTransit:Password"]);
+                        });
+                }));
+
+            services.AddMassTransitHostedService();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseInitializer initializer)

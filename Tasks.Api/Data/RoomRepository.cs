@@ -13,7 +13,7 @@ namespace Tasks.Api.Data
         {
         }
 
-        public async Task<UserInRoom?> FindUserInRoom(Guid roomId, Guid userId)
+        public async Task<UserInTheRoom?> FindUserInRoom(Guid roomId, Guid userId)
         {
             return await _context.UsersInRoom.Include(x => x.RoomRole)
                 .FirstOrDefaultAsync(x => x.RoomId == roomId && x.UserId == userId);

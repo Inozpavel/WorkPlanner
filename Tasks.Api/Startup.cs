@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using IdentityServer4.AccessTokenValidation;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Tasks.Api.Data;
+using Tasks.Api.MassTransit;
 using Tasks.Api.Services;
 
 namespace Tasks.Api
@@ -95,6 +97,27 @@ namespace Tasks.Api
             services.AddTransient<DatabaseInitializer>();
 
             services.AddControllers();
+
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<UserRegisteredConsumer>();
+
+                x.UsingRabbitMq((context, configurator) =>
+                {
+                    configurator.Host(_configuration["MassTransit:Host"],
+                        _configuration["MassTransit:VirtualHost"], options =>
+                        {
+                            options.Username(_configuration["MassTransit:Username"]);
+                            options.Password(_configuration["MassTransit:Password"]);
+                        });
+
+                    configurator.ReceiveEndpoint("registered-users",
+                        e => { e.ConfigureConsumer<UserRegisteredConsumer>(context); });
+                });
+            });
+
+
+            services.AddMassTransitHostedService();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseInitializer databaseInitializer)
