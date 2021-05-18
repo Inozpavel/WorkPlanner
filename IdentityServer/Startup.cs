@@ -24,10 +24,7 @@ namespace IdentityServer
                 .AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<ApplicationContext>();
 
-            services.AddIdentityServer(options =>
-                {
-                    options.IssuerUri = _configuration["IssuerUri"];
-                })
+            services.AddIdentityServer(options => { options.IssuerUri = _configuration["IssuerUri"]; })
                 .AddInMemoryApiScopes(Config.ApiScopes)
                 .AddInMemoryClients(Config.GetConfiguredClients(_configuration))
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())

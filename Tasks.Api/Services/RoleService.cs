@@ -33,24 +33,18 @@ namespace Tasks.Api.Services
             return _mapper.Map<IEnumerable<RoleViewModel>>(roles);
         }
 
-        public async Task UpdateRoleForUser(Guid roomId, UpdateUserRoleViewModel viewModel, Guid senderId)
+        public async Task UpdateRoleForUser(Guid roomId, UserWithRoleViewModel viewModel, Guid userId)
         {
-            if (await _roomService.FindById(roomId) == null)
-                throw new NotFoundApiException(AppExceptions.RoomNotFoundException);
+            await _roomService.ThrowIfRoomNotFound(roomId);
+            await _userService.ThrowIfNotRoomMember(roomId, userId);
 
-            if (!await _userService.CheckUserIsInRoom(roomId, senderId))
-                throw new AccessRightApiException(AppExceptions.NotRoomMemberException);
-
-            if (!await _userService.CheckUserIsInRoom(roomId, viewModel.UserId))
-                throw new AccessRightApiException(AppExceptions.NotRoomMemberException);
-
-            if (!await _userService.CheckUserIsInRole(roomId, senderId, Roles.Creator))
+            if (!await _userService.CheckUserIsInRole(roomId, userId, Roles.Creator))
                 throw new AccessRightApiException(AppExceptions.CreatorOnlyCanPerformThisActionException);
 
-            if (viewModel.UserId == senderId)
+            if (viewModel.UserId == userId)
                 return;
 
-            var role = await _unitOfWork.RoomRoleRepository.Find(x => x.RoomRoleId == viewModel.RoleId);
+            var role = await _unitOfWork.RoomRoleRepository.Find(x => x.RoomRoleId == viewModel.RoomRoleId);
             if (role == null)
                 throw new NotFoundApiException(AppExceptions.RoleNotFoundException);
 
@@ -58,6 +52,16 @@ namespace Tasks.Api.Services
             if (user != null)
                 user.RoomRole = role;
             await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<List<UserWithRoleViewModel>> GetUsersInRoomWithRoles(Guid roomId, Guid userId)
+        {
+            await _roomService.ThrowIfRoomNotFound(roomId);
+            await _userService.ThrowIfNotRoomMember(roomId, userId);
+
+            var room = await _unitOfWork.RoomRepository.FindRoomWithUsers(roomId);
+
+            return _mapper.Map<List<UserWithRoleViewModel>>(room?.UsersInRoom);
         }
     }
 }

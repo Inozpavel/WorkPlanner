@@ -49,7 +49,8 @@ namespace Tasks.Api.Controllers
         {
             var addedTask =
                 await _roomTaskService.CreateTask(roomId, viewModel, UserService.GetCurrentUserId(HttpContext));
-            return CreatedAtAction(nameof(Find), new {roomId=addedTask.RoomTaskId, taskId = addedTask.RoomTaskId}, addedTask);
+            return CreatedAtAction(nameof(Find), new {roomId = addedTask.RoomTaskId, taskId = addedTask.RoomTaskId},
+                addedTask);
         }
 
         [HttpPut("{taskId:guid}")]

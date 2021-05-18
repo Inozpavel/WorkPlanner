@@ -8,8 +8,8 @@ namespace Tasks.Api.Entities
 
         public Guid UserId { get; set; }
 
-        public RoomRole RoomRole { get; set; }
-
         public Guid RoomRoleId { get; set; }
+
+        public RoomRole RoomRole { get; set; }
     }
 }

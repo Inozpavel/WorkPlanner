@@ -46,8 +46,7 @@ namespace Tasks.Api.Services
             if (room == null)
                 throw new NotFoundApiException(AppExceptions.RoomNotFoundException);
 
-            if (!await _userService.CheckUserIsInRoom(roomId, userId))
-                throw new AccessRightApiException(AppExceptions.NotRoomMemberException);
+            await _userService.ThrowIfNotRoomMember(roomId, userId);
 
             if (!await _userService.CheckUserHasAnyRole(roomId, userId, Roles.Creator, Roles.Administrator))
                 throw new AccessRightApiException(AppExceptions.CreatorOrAdministratorOnlyCanDoThisException);
@@ -69,11 +68,8 @@ namespace Tasks.Api.Services
             if (task == null)
                 throw new NotFoundApiException(AppExceptions.TaskNotFoundException);
 
-            if (task.RoomId != roomId)
-                throw new NotFoundApiException(AppExceptions.TaskInRoomNotFoundException);
-
-            if (!await _userService.CheckUserIsInRoom(task.RoomId, userId))
-                throw new AccessRightApiException(AppExceptions.NoAccessToTaskException);
+            ThrowIfTaskNotInRoom(task, roomId);
+            await _userService.ThrowIfNotRoomMember(roomId, userId);
 
             if (!await _userService.CheckUserHasAnyRole(task.RoomId, userId, Roles.Creator, Roles.Administrator))
                 throw new AccessRightApiException(AppExceptions.CreatorOrAdministratorOnlyCanDoThisException);
@@ -91,11 +87,8 @@ namespace Tasks.Api.Services
             if (task == null)
                 throw new NotFoundApiException(AppExceptions.TaskNotFoundException);
 
-            if (task.RoomId != roomId)
-                throw new NotFoundApiException(AppExceptions.TaskInRoomNotFoundException);
-
-            if (!await _userService.CheckUserIsInRoom(task.RoomId, userId))
-                throw new AccessRightApiException(AppExceptions.NotRoomMemberException);
+            ThrowIfTaskNotInRoom(task, roomId);
+            await _userService.ThrowIfNotRoomMember(roomId, userId);
 
             if (!await _userService.CheckUserHasAnyRole(task.RoomId, userId, Roles.Creator, Roles.Administrator))
                 throw new AccessRightApiException(AppExceptions.CreatorOrAdministratorOnlyCanDoThisException);
@@ -103,6 +96,12 @@ namespace Tasks.Api.Services
             _unitOfWork.RoomTaskRepository.Delete(task);
 
             await _unitOfWork.SaveChangesAsync();
+        }
+
+        private static void ThrowIfTaskNotInRoom(RoomTask roomTask, Guid roomId)
+        {
+            if (roomTask.RoomId != roomId)
+                throw new NotFoundApiException(AppExceptions.TaskInRoomNotFoundException);
         }
     }
 }

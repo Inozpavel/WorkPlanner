@@ -74,7 +74,7 @@ namespace Tasks.Api.Controllers
         [HttpGet("join/{roomId:guid}")]
         [SwaggerResponse(StatusCodes.Status200OK, type: typeof(RoomViewModel))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "If link is incorrect", typeof(ProblemDetails))]
-        public async Task<ActionResult> JoinRoom(Guid roomId)
+        public async Task<ActionResult<RoomViewModel>> JoinRoom(Guid roomId)
         {
             var room = await _roomService.JoinUserToRoom(roomId, UserService.GetCurrentUserId(HttpContext));
             return Ok(room);

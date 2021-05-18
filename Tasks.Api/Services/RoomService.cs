@@ -93,7 +93,7 @@ namespace Tasks.Api.Services
 
             if (room == null)
                 throw new NotFoundApiException(AppExceptions.IncorrectUrlException);
-            
+
             var mappedRoom = _mapper.Map<RoomViewModel>(room);
             if (room.UsersInRoom.Any(x => x.UserId == userId))
                 return mappedRoom;
@@ -105,6 +105,12 @@ namespace Tasks.Api.Services
             });
             await _unitOfWork.SaveChangesAsync();
             return mappedRoom;
+        }
+
+        public async Task ThrowIfRoomNotFound(Guid roomId)
+        {
+            if (await FindById(roomId) == null)
+                throw new NotFoundApiException(AppExceptions.RoomNotFoundException);
         }
     }
 }
