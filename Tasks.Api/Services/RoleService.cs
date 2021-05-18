@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Tasks.Api.Data;
 using Tasks.Api.Entities;
 using Tasks.Api.Exceptions;
 using Tasks.Api.ViewModels.RoleViewModels;
+using Tasks.Api.ViewModels.UserViewModel;
 
 namespace Tasks.Api.Services
 {
@@ -33,7 +35,7 @@ namespace Tasks.Api.Services
             return _mapper.Map<IEnumerable<RoleViewModel>>(roles);
         }
 
-        public async Task UpdateRoleForUser(Guid roomId, UserWithRoleViewModel viewModel, Guid userId)
+        public async Task UpdateRoleForUser(Guid roomId, UpdateUserRoleViewModel viewModel, Guid userId)
         {
             await _roomService.ThrowIfRoomNotFound(roomId);
             await _userService.ThrowIfNotRoomMember(roomId, userId);
@@ -60,8 +62,14 @@ namespace Tasks.Api.Services
             await _userService.ThrowIfNotRoomMember(roomId, userId);
 
             var room = await _unitOfWork.RoomRepository.FindRoomWithUsers(roomId);
+            if (room == null)
+                throw new NotFoundApiException(AppExceptions.RoomNotFoundException);
 
-            return _mapper.Map<List<UserWithRoleViewModel>>(room?.UsersInRoom);
+            return room.UsersInRoom.Select(x => new UserWithRoleViewModel
+            {
+                User = _mapper.Map<UserFullNameViewModel>(x.User),
+                RoleId = x.RoomRoleId
+            }).ToList();
         }
     }
 }

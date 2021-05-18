@@ -30,6 +30,7 @@ namespace Tasks.Api.Data
             await _context.Rooms.Where(x => x.UsersInRoom.Any(u => u.UserId == userId)).ToListAsync();
 
         public async Task<Room?> FindRoomWithUsers(Guid roomId) =>
-            await _context.Rooms.Include(x => x.UsersInRoom).FirstOrDefaultAsync(x => x.RoomId == roomId);
+            await _context.Rooms.Include(x => x.UsersInRoom).ThenInclude<Room, UserInTheRoom, User>(x => x.User)
+                .FirstOrDefaultAsync(x => x.RoomId == roomId);
     }
 }

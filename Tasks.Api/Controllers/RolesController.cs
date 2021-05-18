@@ -19,16 +19,16 @@ namespace Tasks.Api.Controllers
         public RolesController(RoleService roleService) => _roleService = roleService;
 
         [HttpGet("[controller]")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status200OK, type: typeof(List<RoleViewModel>))]
         public async Task<ActionResult<List<string>>> AllRoles() => Ok(await _roleService.AllRoles());
 
         [Authorize]
         [HttpPut("rooms/{roomId:guid}/[controller]")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "If user is unauthorized")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "If id is incorrect", typeof(ProblemDetails))]
         [SwaggerResponse(StatusCodes.Status403Forbidden, "If user has insufficient rights", typeof(ProblemDetails))]
-        public async Task<ActionResult> UpdateRoleForUser(Guid roomId, UserWithRoleViewModel viewModel)
+        public async Task<ActionResult> UpdateRoleForUser(Guid roomId, UpdateUserRoleViewModel viewModel)
         {
             await _roleService.UpdateRoleForUser(roomId, viewModel, UserService.GetCurrentUserId(HttpContext));
             return Ok();
@@ -36,7 +36,7 @@ namespace Tasks.Api.Controllers
 
         [Authorize]
         [HttpGet("rooms/{roomId:guid}/[controller]")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status200OK, type: typeof(List<UserWithRoleViewModel>))]
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "If user is unauthorized")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "If id is incorrect", typeof(ProblemDetails))]
         [SwaggerResponse(StatusCodes.Status403Forbidden, "If user has insufficient rights", typeof(ProblemDetails))]

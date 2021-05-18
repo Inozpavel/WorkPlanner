@@ -1,11 +1,12 @@
 using System;
+using Tasks.Api.ViewModels.UserViewModel;
 
 namespace Tasks.Api.ViewModels.RoleViewModels
 {
     public class UserWithRoleViewModel
     {
-        public Guid UserId { get; set; }
+        public UserFullNameViewModel User { get; set; }
 
-        public Guid RoomRoleId { get; set; }
+        public Guid RoleId { get; set; }
     }
 }

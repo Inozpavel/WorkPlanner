@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Tasks.Api.Data;
@@ -95,7 +94,7 @@ namespace Tasks.Api.Services
                 throw new NotFoundApiException(AppExceptions.IncorrectUrlException);
 
             var mappedRoom = _mapper.Map<RoomViewModel>(room);
-            if (room.UsersInRoom.Any(x => x.UserId == userId))
+            if (await _unitOfWork.RoomRepository.FindUserInRoom(roomId, userId) != null)
                 return mappedRoom;
 
             room.UsersInRoom.Add(new UserInTheRoom
