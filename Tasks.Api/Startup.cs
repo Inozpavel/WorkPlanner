@@ -26,7 +26,7 @@ namespace Tasks.Api
         {
             services.AddDbContext<ApplicationContext>(options =>
             {
-                options.UseNpgsql(_configuration.GetConnectionString("TasksDb"));
+                options.UseNpgsql(_configuration.GetConnectionString("TasksDb") + _configuration["DbName"]);
             });
 
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)

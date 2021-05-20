@@ -1,87 +1,144 @@
-﻿version: "3.1"
+﻿x-timezone: &time-zone
+  TZ: Europe/Moscow
+
+x-common-variables: &common-variables
+  <<: *time-zone
+  ASPNETCORE_ENVIRONMENT: Production
+
+x-postgres: &postgres
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "SP2Y5h7mGoS3dezu6EXp"
+  PGDATA: "/postgres_data"
+
+x-postgres-connection:
+  connection-address: &connection-address "Host=postgres_db;Port=5432;Username=postgres;Password=SP2Y5h7mGoS3dezu6EXp;"
+
+x-rabbitmq: &rabbitmq
+  RABBITMQ_DEFAULT_VHOST: &rabbitmq-virtual-host "WorkPlanner"
+  RABBITMQ_DEFAULT_USER: &rabbitmq-username "user"
+  RABBITMQ_DEFAULT_PASS: &rabbitmq-password "user"
+
+x-rabbitmq-conection: &rabbitmq-connection
+  MassTransit:Host: "rabbitmq"
+  MassTransit:VirtualHost: *rabbitmq-virtual-host
+  MassTransit:Username: *rabbitmq-username
+  MassTransit:Password: *rabbitmq-password
+
+x-identity-server: &identity-server
+  IdentityServer:Authority: "http://identity_server"
+  IdentityServer:TokenUrl: "http://localhost:9000/connect/token"
+
+x-identity-server-swagger-client: &swagger-client
+  IdentityServer:ClientId: "SwaggerApp"
+  IdentityServer:Secret: &swagger-client-secret "SwaggerAppSecret"
+
+x-identity-server-gateway:
+  Origin: &gateway-origin "http://localhost:5001"
+  Secret: &gateway-secret "GatewaySecret"
+  ClientId: &gateway-client-id "Gateway"
 
 services:
 
-  postgres_db:
-    image: library/postgres:latest
+  gateway:
+    image: inozpavel/workplannergateway
     restart: always
     environment:
-      - TZ=Europe/Moscow
-      - POSTGRES_PASSWORD=postgres
-      - PGDATA=/postgres_data
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      timeout: 4s
-      interval: 1s
-      retries: 30
+      <<: *common-variables
+      <<: *identity-server
+      IdentityServer:ClientId: *gateway-client-id
+      IdentityServer:Secret: *gateway-secret
+    depends_on:
+      identity_server:
+        condition: service_started
+      tasks.api:
+        condition: service_started
+      users.api:
+        condition: service_started
     ports:
-      - "5433:5432"
+      - "5001:80"
+
+  tasks.api:
+    image: inozpavel/workplannertasksapi
+    restart: always
+    environment:
+      <<: *common-variables
+      ConnectionStrings:TasksDb: *connection-address
+      DbName: "Database=Tasks"
+      <<: *identity-server
+      <<: *swagger-client
+      <<: *rabbitmq-connection
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+      users.api:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "8000:80"
+
+  users.api:
+    image: inozpavel/workplannerusersapi
+    restart: always
+    environment:
+      <<: *common-variables
+      ConnectionStrings:Identity: *connection-address
+      DbName: "Database=Identity"
+      <<: *identity-server
+      <<: *swagger-client
+      <<: *rabbitmq-connection
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "8001:80"
 
   identity_server:
     image: inozpavel/workplanneridentityserver
     restart: always
     environment:
-      - TZ=Europe/Moscow
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings:Identity=Host=postgres_db;Port=5432;Database=Identity;Username=postgres;Password=postgres
-      - Clients:Gateway:Origin=http://localhost:5000
-      - Clients:Gateway:Secret=GatewaySecret
-      - IssuerUri=identity_server
+      <<: *common-variables
+      ConnectionStrings:Identity: *connection-address
+      DbName: "Database=Identity"
+      Clients:Gateway:Origin: *gateway-origin
+      Clients:Gateway:Secret: *gateway-secret
+      Clients:SwaggerApp:Secret: *swagger-client-secret
+      IssuerUri: "identity_server"
     depends_on:
       postgres_db:
         condition: service_healthy
     ports:
       - "9000:80"
 
-  users.api:
-    image: inozpavel/workplannerusersapi
+  postgres_db:
+    image: library/postgres
     restart: always
     environment:
-      - TZ=Europe/Moscow
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings:Identity=Host=postgres_db;Port=5432;Database=Identity;Username=postgres;Password=postgres
-      - IdentityServer:Authority=http://identity_server
-      - IdentityServer:TokenUrl=http://localhost:9000/connect/token
-      - IdentityServer:ClientId=SwaggerApp
-      - IdentityServer:Secret=SwaggerAppSecret
-      depends_on:
-        postgres_db:
-          condition: service_healthy
-      ports:
-        - "8001:80"
-
-  tasks.api:
-    image: inozpavel/workplannertasksapi
-    restart: always
-    environment:
-      - TZ=Europe/Moscow
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings:TasksDb=Host=postgres_db;Port=5432;Database=Stores;Username=postgres;Password=postgres
-      - IdentityServer:Authority=http://identity_server
-      - IdentityServer:TokenUrl=http://localhost:9000/connect/token
-      - IdentityServer:ClientId=SwaggerApp
-      - IdentityServer:Secret=SwaggerAppSecret
-    ports:
-      - "8000:80"
+      <<: *time-zone
+      <<: *postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      timeout: 5s
+      interval: 5s
+      retries: 10
     depends_on:
-      postgres_db:
+      rabbitmq:
         condition: service_healthy
-      identity.api:
-        condition: service_started
+    ports:
+      - "5433:5432"
 
-  gateway:
-    image: inozpavel/workplannergateway
-      restart: always
-      environment:
-        - TZ=Europe/Moscow
-        - ASPNETCORE_ENVIRONMENT=Production
-        - IdentityServer:Authority=http://identity_server
-        - IdentityServer:TokenUrl=http://localhost:9000/connect/token
-        - IdentityServer:ClientId=Gateway
-        - IdentityServer:Secret=GatewaySecret
-      ports:
-        - "5000:80"
-      depends_on:
-        - identity_server
-        - tasks.api
-        - users.api
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    environment:
+      <<: *rabbitmq
+      <<: *time-zone
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      timeout: 5s
+      interval: 5s
+      retries: 10
+    ports:
+      - "15673:15672"

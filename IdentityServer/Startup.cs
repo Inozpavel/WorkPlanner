@@ -19,7 +19,7 @@ namespace IdentityServer
         {
             services.AddDbContext<ApplicationContext>(options =>
                 {
-                    options.UseNpgsql(_configuration.GetConnectionString("Identity"));
+                    options.UseNpgsql(_configuration.GetConnectionString("Identity") + _configuration["DbName"]);
                 })
                 .AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<ApplicationContext>();

@@ -93,7 +93,8 @@ namespace ApiGateway.Ocelot
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context => { await context.Response.WriteAsync("Here is ocelot!"); });
+                endpoints.MapGet("/",
+                    async context => await context.Response.WriteAsync("Here is ocelot!\n Try also /swagger"));
                 endpoints.MapControllers();
             });
 
