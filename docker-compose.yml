@@ -26,16 +26,19 @@ x-rabbitmq-conection: &rabbitmq-connection
 
 x-identity-server: &identity-server
   IdentityServer:Authority: "http://identity_server"
-  IdentityServer:TokenUrl: "http://localhost:9000/connect/token"
+  IdentityServer:TokenUrl: "http://localhost:10000/connect/token"
 
 x-identity-server-swagger-client: &swagger-client
   IdentityServer:ClientId: "SwaggerApp"
   IdentityServer:Secret: &swagger-client-secret "SwaggerAppSecret"
 
 x-identity-server-gateway:
-  Origin: &gateway-origin "http://localhost:5001"
+  Origin: &gateway-origin "http://localhost:4000"
   Secret: &gateway-secret "GatewaySecret"
   ClientId: &gateway-client-id "Gateway"
+
+x-mails: &mails
+  Gateway:Host: "http://localhost:4000"
 
 services:
 
@@ -55,7 +58,7 @@ services:
       users.api:
         condition: service_started
     ports:
-      - "5001:80"
+      - "4000:80"
 
   tasks.api:
     image: inozpavel/workplannertasksapi
@@ -70,12 +73,10 @@ services:
     depends_on:
       postgres_db:
         condition: service_healthy
-      users.api:
-        condition: service_started
       rabbitmq:
         condition: service_healthy
     ports:
-      - "8000:80"
+      - "7000:80"
 
   users.api:
     image: inozpavel/workplannerusersapi
@@ -87,13 +88,16 @@ services:
       <<: *identity-server
       <<: *swagger-client
       <<: *rabbitmq-connection
+      <<: *mails
     depends_on:
       postgres_db:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      identity_server:
+        condition: service_started
     ports:
-      - "8001:80"
+      - "7001:80"
 
   identity_server:
     image: inozpavel/workplanneridentityserver
@@ -110,7 +114,7 @@ services:
       postgres_db:
         condition: service_healthy
     ports:
-      - "9000:80"
+      - "10000:80"
 
   postgres_db:
     image: library/postgres
@@ -118,16 +122,15 @@ services:
     environment:
       <<: *time-zone
       <<: *postgres
+    volumes:
+      - "./postgres:/postgres_data"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      timeout: 5s
-      interval: 5s
-      retries: 10
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
+      interval: 1s
+      timeout: 3s
+      retries: 30
     ports:
-      - "5433:5432"
+      - "5500:5432"
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -137,8 +140,8 @@ services:
       <<: *time-zone
     healthcheck:
       test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
-      timeout: 5s
-      interval: 5s
-      retries: 10
+      interval: 1s
+      timeout: 3s
+      retries: 30
     ports:
       - "15673:15672"
