@@ -10,6 +10,7 @@ namespace Tasks.Api.MassTransit
     public class UserRegisteredConsumer : IConsumer<UserRegistered>
     {
         private readonly ApplicationContext _applicationContext;
+
         private readonly IMapper _mapper;
 
         public UserRegisteredConsumer(IMapper mapper, ApplicationContext applicationContext)

@@ -40,7 +40,7 @@ namespace Tasks.Api.Services
             await _roomService.ThrowIfRoomNotFound(roomId);
             await _userService.ThrowIfNotRoomMember(roomId, userId);
 
-            if (!await _userService.CheckUserIsInRole(roomId, userId, Roles.Creator))
+            if (!await _userService.CheckUserIsInRole(roomId, userId, Roles.Owner))
                 throw new AccessRightApiException(AppExceptions.CreatorOnlyCanPerformThisActionException);
 
             if (viewModel.UserId == userId)

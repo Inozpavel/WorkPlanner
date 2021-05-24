@@ -24,7 +24,7 @@ namespace Tasks.Api.Services
             _userService = userService;
         }
 
-        public async Task<RoomViewModel> CreateRoom(AddRoomViewModel viewModel, Guid userId)
+        public async Task<RoomViewModel> CreateRoom(AddOrUpdateRoomViewModel viewModel, Guid userId)
         {
             var room = _mapper.Map<Room>(viewModel);
             room.UsersInRoom = new List<UserInTheRoom>
@@ -32,7 +32,7 @@ namespace Tasks.Api.Services
                 new()
                 {
                     UserId = userId,
-                    RoomRole = await _unitOfWork.RoomRoleRepository.FindWithName(Roles.Creator)
+                    RoomRole = await _unitOfWork.RoomRoleRepository.FindWithName(Roles.Owner)
                 }
             };
 
@@ -41,14 +41,14 @@ namespace Tasks.Api.Services
             return _mapper.Map<RoomViewModel>(createdRoom);
         }
 
-        public async Task UpdateRoom(AddRoomViewModel viewModel, Guid roomId, Guid userId)
+        public async Task UpdateRoom(AddOrUpdateRoomViewModel viewModel, Guid roomId, Guid userId)
         {
             var room = await _unitOfWork.RoomRepository.Find(x => x.RoomId == roomId);
 
             if (room == null)
                 throw new NotFoundApiException(AppExceptions.RoomNotFoundException);
 
-            if (!await _userService.CheckUserHasAnyRole(roomId, userId, Roles.Creator, Roles.Administrator))
+            if (!await _userService.CheckUserHasAnyRole(roomId, userId, Roles.Owner, Roles.Administrator))
                 throw new AccessRightApiException(AppExceptions.CreatorOrAdministratorOnlyCanDoThisException);
 
             room = _mapper.Map(viewModel, room);
@@ -64,7 +64,7 @@ namespace Tasks.Api.Services
             if (room == null)
                 throw new NotFoundApiException(AppExceptions.RoomNotFoundException);
 
-            if (!await _userService.CheckUserIsInRole(roomId, userId, Roles.Creator))
+            if (!await _userService.CheckUserIsInRole(roomId, userId, Roles.Owner))
                 throw new AccessRightApiException(AppExceptions.CreatorOnlyCanPerformThisActionException);
 
             _unitOfWork.RoomRepository.Delete(room);
@@ -95,7 +95,7 @@ namespace Tasks.Api.Services
 
             var mappedRoom = _mapper.Map<RoomViewModel>(room);
             if (await _unitOfWork.RoomRepository.FindUserInRoom(roomId, userId) != null)
-                return mappedRoom;
+                throw new AlreadyDoneApiException(AppExceptions.AlreadyMember);
 
             room.UsersInRoom.Add(new UserInTheRoom
             {

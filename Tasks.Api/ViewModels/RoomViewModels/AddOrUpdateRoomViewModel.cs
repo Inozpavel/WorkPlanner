@@ -2,7 +2,7 @@
 
 namespace Tasks.Api.ViewModels.RoomViewModels
 {
-    public class AddRoomViewModel
+    public class AddOrUpdateRoomViewModel
     {
         [StringLength(30)]
         [Required]

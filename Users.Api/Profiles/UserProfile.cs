@@ -15,6 +15,8 @@ namespace Users.Api.Profiles
             CreateMap<UpdateProfileViewModel, User>();
 
             CreateMap<User, UserRegistered>().ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id));
+
+            CreateMap<UpdateProfileViewModel, ProfileUpdated>();
         }
     }
 }

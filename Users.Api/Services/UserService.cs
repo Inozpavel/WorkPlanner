@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using MassTransit;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,14 +24,18 @@ namespace Users.Api.Services
 
         private readonly EmailService _emailService;
 
+        private readonly IWebHostEnvironment _environment;
+
         private readonly IMapper _mapper;
+
         private readonly IPublishEndpoint _publishEndpoint;
 
         private readonly UserManager<User> _userManager;
 
-        public UserService(IPublishEndpoint publishEndpoint, IConfiguration configuration,
-            UserManager<User> userManager, EmailService emailService, IMapper mapper)
+        public UserService(IWebHostEnvironment environment, IPublishEndpoint publishEndpoint,
+            IConfiguration configuration, UserManager<User> userManager, EmailService emailService, IMapper mapper)
         {
+            _environment = environment;
             _publishEndpoint = publishEndpoint;
             _configuration = configuration;
             _userManager = userManager;
@@ -46,7 +51,15 @@ namespace Users.Api.Services
             if (result.Succeeded)
             {
                 await _publishEndpoint.Publish(_mapper.Map<UserRegistered>(user));
-                await SendConfirmationMail(viewModel.Email);
+                try
+                {
+                    await SendConfirmationMail(viewModel.Email);
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+
                 return;
             }
 
@@ -72,24 +85,17 @@ namespace Users.Api.Services
             throw new RegistrationException(validationProblemDetails);
         }
 
-        public async Task<bool> SendConfirmationMail(string email)
+        public async Task SendConfirmationMail(string email)
         {
-            try
-            {
-                var createdUser = await _userManager.FindByEmailAsync(email);
-                string token =
-                    Uri.EscapeDataString(await _userManager.GenerateEmailConfirmationTokenAsync(createdUser));
-                string callbackUrl =
-                    $"{_configuration["Gateway:Host"]}/{_configuration["Gateway:ConfirmMailRoute"]}/{createdUser.Id}/{token}";
+            var createdUser = await _userManager.FindByEmailAsync(email);
+            string token =
+                Uri.EscapeDataString(await _userManager.GenerateEmailConfirmationTokenAsync(createdUser));
+            string callbackUrl =
+                $"{_configuration["Gateway:Host"]}/{_configuration["Gateway:ConfirmMailRoute"]}/{createdUser.Id}/{token}";
 
-                await _emailService.SendEmailAsync(email, "Email confirmation",
-                    string.Format(await File.ReadAllTextAsync("mail.html"), callbackUrl));
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            await _emailService.SendEmailAsync(email, "Email confirmation",
+                string.Format(await File.ReadAllTextAsync(Path.Combine(_environment.ContentRootPath, "mail.html")),
+                    callbackUrl));
         }
 
         public async Task UpdateProfileAsync(Guid userId, UpdateProfileViewModel viewModel)
@@ -98,6 +104,10 @@ namespace Users.Api.Services
 
             if (user == null)
                 throw new UserNotFoundApiException("Token is invalid: user with given id was not found!");
+
+            var updatedProfile = _mapper.Map<ProfileUpdated>(viewModel);
+            updatedProfile.UserId = user.Id;
+            await _publishEndpoint.Publish(updatedProfile);
 
             user = _mapper.Map(viewModel, user);
             await _userManager.UpdateAsync(user);

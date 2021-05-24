@@ -15,6 +15,8 @@ namespace Tasks.Api.Profiles
             CreateMap<UserRegistered, User>();
 
             CreateMap<User, UserFullNameViewModel>();
+
+            CreateMap<ProfileUpdated, User>();
         }
     }
 }

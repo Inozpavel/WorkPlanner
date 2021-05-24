@@ -4,7 +4,7 @@ namespace Tasks.Api.Entities
 {
     public class Roles
     {
-        public const string Creator = "Creator";
+        public const string Owner = "Owner";
 
         public const string Administrator = "Admin";
 
@@ -12,7 +12,7 @@ namespace Tasks.Api.Entities
 
         public static IEnumerable<string> AllRoles()
         {
-            yield return Creator;
+            yield return Owner;
             yield return Administrator;
             yield return Member;
         }

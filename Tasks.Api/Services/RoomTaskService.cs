@@ -48,7 +48,7 @@ namespace Tasks.Api.Services
 
             await _userService.ThrowIfNotRoomMember(roomId, userId);
 
-            if (!await _userService.CheckUserHasAnyRole(roomId, userId, Roles.Creator, Roles.Administrator))
+            if (!await _userService.CheckUserHasAnyRole(roomId, userId, Roles.Owner, Roles.Administrator))
                 throw new AccessRightApiException(AppExceptions.CreatorOrAdministratorOnlyCanDoThisException);
 
             var task = _mapper.Map<RoomTask>(viewModel);
@@ -71,7 +71,7 @@ namespace Tasks.Api.Services
             ThrowIfTaskNotInRoom(task, roomId);
             await _userService.ThrowIfNotRoomMember(roomId, userId);
 
-            if (!await _userService.CheckUserHasAnyRole(task.RoomId, userId, Roles.Creator, Roles.Administrator))
+            if (!await _userService.CheckUserHasAnyRole(task.RoomId, userId, Roles.Owner, Roles.Administrator))
                 throw new AccessRightApiException(AppExceptions.CreatorOrAdministratorOnlyCanDoThisException);
 
             task = _mapper.Map(viewModel, task);
@@ -90,7 +90,7 @@ namespace Tasks.Api.Services
             ThrowIfTaskNotInRoom(task, roomId);
             await _userService.ThrowIfNotRoomMember(roomId, userId);
 
-            if (!await _userService.CheckUserHasAnyRole(task.RoomId, userId, Roles.Creator, Roles.Administrator))
+            if (!await _userService.CheckUserHasAnyRole(task.RoomId, userId, Roles.Owner, Roles.Administrator))
                 throw new AccessRightApiException(AppExceptions.CreatorOrAdministratorOnlyCanDoThisException);
 
             _unitOfWork.RoomTaskRepository.Delete(task);

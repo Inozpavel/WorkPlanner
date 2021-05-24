@@ -8,7 +8,7 @@ namespace Tasks.Api.Profiles
     {
         public RoomProfile()
         {
-            CreateMap<AddRoomViewModel, Room>();
+            CreateMap<AddOrUpdateRoomViewModel, Room>();
 
             CreateMap<Room, RoomViewModel>();
         }

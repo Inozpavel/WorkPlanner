@@ -25,5 +25,7 @@ namespace Tasks.Api.Exceptions
             InsufficientRightsException + "Only owner or administrator can perform this action!";
 
         public const string IncorrectUrlException = "Incorrect link!";
+
+        public const string AlreadyMember = "You are already a member of the room!";
     }
 }

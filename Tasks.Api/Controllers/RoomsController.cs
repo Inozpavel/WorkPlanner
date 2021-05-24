@@ -36,7 +36,7 @@ namespace Tasks.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status404NotFound, "If id is incorrect", typeof(ProblemDetails))]
         [SwaggerResponse(StatusCodes.Status403Forbidden, "If user has insufficient rights", typeof(ProblemDetails))]
-        public async Task<ActionResult> Update(AddRoomViewModel viewModel, Guid roomId)
+        public async Task<ActionResult> Update(AddOrUpdateRoomViewModel viewModel, Guid roomId)
         {
             await _roomService.UpdateRoom(viewModel, roomId, UserService.GetCurrentUserId(HttpContext));
             return Ok();
@@ -44,7 +44,7 @@ namespace Tasks.Api.Controllers
 
         [HttpPost]
         [SwaggerResponse(StatusCodes.Status201Created, Type = typeof(RoomViewModel))]
-        public async Task<CreatedAtActionResult> Create(AddRoomViewModel viewModel)
+        public async Task<CreatedAtActionResult> Create(AddOrUpdateRoomViewModel viewModel)
         {
             var createdRoom = await _roomService.CreateRoom(viewModel, UserService.GetCurrentUserId(HttpContext));
             return CreatedAtAction(nameof(Find), new {roomId = createdRoom.RoomId}, createdRoom);

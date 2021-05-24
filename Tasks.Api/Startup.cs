@@ -101,6 +101,7 @@ namespace Tasks.Api
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<UserRegisteredConsumer>();
+                x.AddConsumer<ProfileUpdatedConsumer>();
 
                 x.UsingRabbitMq((context, configurator) =>
                 {
@@ -113,6 +114,9 @@ namespace Tasks.Api
 
                     configurator.ReceiveEndpoint("registered-users",
                         e => { e.ConfigureConsumer<UserRegisteredConsumer>(context); });
+
+                    configurator.ReceiveEndpoint("updated-profiles",
+                        e => { e.ConfigureConsumer<ProfileUpdatedConsumer>(context); });
                 });
             });
 
