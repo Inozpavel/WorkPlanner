@@ -18,7 +18,7 @@
 	  <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.6" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
 	  <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.1.4" />
-	  <PackageReference Include="WorkPlanner.Users.Data" Version="1.0.2" />
+	  <PackageReference Include="WorkPlanner.Users.Data" Version="1.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>

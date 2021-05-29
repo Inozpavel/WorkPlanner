@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using Microsoft.AspNetCore.Identity;
 
 namespace Users.Data.Entities
@@ -9,6 +10,6 @@ namespace Users.Data.Entities
 
         public string FirstName { get; set; }
 
-        public string Patronymic { get; set; }
+        public string? Patronymic { get; set; }
     }
 }

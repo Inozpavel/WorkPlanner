@@ -12,7 +12,6 @@ namespace Users.Api.ViewModels
         [StringLength(50)]
         public string FirstName { get; set; }
 
-        [Required]
         [StringLength(50)]
         public string Patronymic { get; set; }
 
