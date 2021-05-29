@@ -20,7 +20,7 @@ namespace Tasks.Api.Entities
 
         public Guid TaskCreatorId { get; set; }
 
-        public UserInTheRoom TaskCreator { get; set; }
+        public User TaskCreator { get; set; }
 
         public DateTime DeadlineTime { get; set; }
     }
