@@ -6,6 +6,7 @@ using Tasks.Api.Data;
 using Tasks.Api.Entities;
 using Tasks.Api.Exceptions;
 using Tasks.Api.ViewModels.TaskViewModels;
+using Tasks.Api.ViewModels.UserViewModel;
 
 namespace Tasks.Api.Services
 {
@@ -102,6 +103,25 @@ namespace Tasks.Api.Services
         {
             if (roomTask.RoomId != roomId)
                 throw new NotFoundApiException(AppExceptions.TaskInRoomNotFoundException);
+        }
+
+        public async Task<UserFullNameViewModel> FindTaskCreator(Guid roomId, Guid taskId, Guid userId)
+        {
+            var task = await _unitOfWork.RoomTaskRepository.Find(x => x.RoomTaskId == taskId);
+
+            if (task == null)
+                throw new NotFoundApiException(AppExceptions.TaskNotFoundException);
+
+            ThrowIfTaskNotInRoom(task, roomId);
+            await _userService.ThrowIfNotRoomMember(roomId, userId);
+
+            var userInRoom = await _unitOfWork.RoomRepository.FindUserInRoom(roomId, task.TaskCreatorId);
+            if (userInRoom == null)
+            {
+                throw new NotFoundApiException(AppExceptions.CreatorNotFound); 
+            }
+
+            return _mapper.Map<UserFullNameViewModel>(userInRoom.User);
         }
     }
 }

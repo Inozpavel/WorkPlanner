@@ -16,6 +16,7 @@ namespace Tasks.Api.Data
         public async Task<UserInTheRoom?> FindUserInRoom(Guid roomId, Guid userId)
         {
             return await _context.UsersInRoom.Include(x => x.RoomRole)
+                .Include(x => x.User)
                 .FirstOrDefaultAsync(x => x.RoomId == roomId && x.UserId == userId);
         }
 

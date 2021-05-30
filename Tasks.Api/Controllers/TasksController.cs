@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Tasks.Api.Services;
 using Tasks.Api.ViewModels.TaskViewModels;
+using Tasks.Api.ViewModels.UserViewModel;
 
 namespace Tasks.Api.Controllers
 {
@@ -43,6 +44,16 @@ namespace Tasks.Api.Controllers
             return Ok(task);
         }
 
+        [HttpGet("{taskId:guid}/creator")]
+        [SwaggerResponse(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<UserFullNameViewModel>> FindCreator(Guid roomId, Guid taskId)
+        {
+            var creator =
+                await _roomTaskService.FindTaskCreator(roomId, taskId, UserService.GetCurrentUserId(HttpContext));
+            return Ok(creator);
+        }
+
         [HttpPost]
         [SwaggerResponse(StatusCodes.Status201Created)]
         public async Task<CreatedAtActionResult> Create(Guid roomId, AddTaskViewModel viewModel)
@@ -54,19 +65,19 @@ namespace Tasks.Api.Controllers
         }
 
         [HttpPut("{taskId:guid}")]
-        [SwaggerResponse(StatusCodes.Status202Accepted)]
+        [SwaggerResponse(StatusCodes.Status200OK)]
         public async Task<ActionResult> Update(Guid roomId, Guid taskId, AddTaskViewModel viewModel)
         {
             await _roomTaskService.UpdateTask(roomId, taskId, viewModel, UserService.GetCurrentUserId(HttpContext));
-            return Accepted();
+            return Ok();
         }
 
         [HttpDelete("{taskId:guid}")]
-        [SwaggerResponse(StatusCodes.Status202Accepted)]
+        [SwaggerResponse(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(Guid roomId, Guid taskId)
         {
             await _roomTaskService.DeleteTask(roomId, taskId, UserService.GetCurrentUserId(HttpContext));
-            return Accepted();
+            return Ok();
         }
     }
 }

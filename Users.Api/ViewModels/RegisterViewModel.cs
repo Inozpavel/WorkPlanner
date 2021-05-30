@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿#nullable enable
+using System.ComponentModel.DataAnnotations;
 
 namespace Users.Api.ViewModels
 {
@@ -16,7 +17,7 @@ namespace Users.Api.ViewModels
         public string Patronymic { get; set; }
 
         [Phone]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [Required]
         [EmailAddress]

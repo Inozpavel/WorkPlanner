@@ -12,6 +12,7 @@ namespace Tasks.Api.Exceptions
 
         private const string InsufficientRightsException = "Insufficient rights! ";
 
+        
         public const string NotRoomMemberException =
             InsufficientRightsException + "The user is not a member of the room!";
 
@@ -27,5 +28,7 @@ namespace Tasks.Api.Exceptions
         public const string IncorrectUrlException = "Incorrect link!";
 
         public const string AlreadyMember = "You are already a member of the room!";
+        
+        public const string CreatorNotFound = "Creator of the task was not found!";
     }
 }
