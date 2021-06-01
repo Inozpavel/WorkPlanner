@@ -12,6 +12,8 @@ namespace Tasks.Api.Entities
 
         public string? Details { get; set; }
 
+        public bool IsCompleted { get; set; }
+
         public Guid RoomId { get; set; }
 
         public Room Room { get; set; }

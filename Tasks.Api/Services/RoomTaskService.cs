@@ -31,12 +31,25 @@ namespace Tasks.Api.Services
             return _mapper.Map<IEnumerable<TaskViewModel>>(tasks);
         }
 
-        public async Task<TaskViewModel?> FindTask(Guid roomId, Guid taskId)
+        public async Task<TaskViewModel?> FindTask(Guid roomId, Guid taskId, Guid userId)
         {
             var task = await _unitOfWork.RoomTaskRepository.Find(x => x.RoomTaskId == taskId);
             if (task?.RoomId != roomId)
                 throw new NotFoundApiException(AppExceptions.TaskInRoomNotFoundException);
 
+            await _userService.ThrowIfNotRoomMember(roomId, userId);
+            
+            return _mapper.Map<TaskViewModel>(task);
+        }
+        public async Task<TaskViewModel?> CompleteTask(Guid roomId, Guid taskId, Guid userId)
+        {
+            var task = await _unitOfWork.RoomTaskRepository.Find(x => x.RoomTaskId == taskId);
+            if (task?.RoomId != roomId)
+                throw new NotFoundApiException(AppExceptions.TaskInRoomNotFoundException);
+            await _userService.ThrowIfNotRoomMember(roomId, userId);
+
+            task.IsCompleted = true;
+            await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<TaskViewModel>(task);
         }
 

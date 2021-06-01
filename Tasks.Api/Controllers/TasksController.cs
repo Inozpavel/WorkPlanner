@@ -24,6 +24,8 @@ namespace Tasks.Api.Controllers
         [HttpGet]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status204NoContent)]
+        [SwaggerResponse(StatusCodes.Status403Forbidden)]
+        [SwaggerResponse(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
         public async Task<ActionResult<IEnumerable<TaskViewModel>>> AllTasksInRoom(Guid roomId)
         {
@@ -35,10 +37,11 @@ namespace Tasks.Api.Controllers
 
         [HttpGet("{taskId:guid}")]
         [SwaggerResponse(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status403Forbidden)]
         [SwaggerResponse(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<TaskViewModel>> Find(Guid roomId, Guid taskId)
         {
-            var task = await _roomTaskService.FindTask(roomId, taskId);
+            var task = await _roomTaskService.FindTask(roomId, taskId, UserService.GetCurrentUserId(HttpContext));
             if (task == null)
                 return NotFound();
             return Ok(task);
@@ -46,6 +49,7 @@ namespace Tasks.Api.Controllers
 
         [HttpGet("{taskId:guid}/creator")]
         [SwaggerResponse(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status403Forbidden)]
         [SwaggerResponse(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserFullNameViewModel>> FindCreator(Guid roomId, Guid taskId)
         {
@@ -54,8 +58,18 @@ namespace Tasks.Api.Controllers
             return Ok(creator);
         }
 
+        [HttpGet("{taskId:guid}/complete")]
+        [SwaggerResponse(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status403Forbidden)]
+        [SwaggerResponse(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<UserFullNameViewModel>> CompleteTask(Guid roomId, Guid taskId) => Ok(
+            await _roomTaskService.CompleteTask(roomId, taskId, UserService.GetCurrentUserId(HttpContext)));
+
+
         [HttpPost]
         [SwaggerResponse(StatusCodes.Status201Created)]
+        [SwaggerResponse(StatusCodes.Status403Forbidden)]
+        [SwaggerResponse(StatusCodes.Status404NotFound)]
         public async Task<CreatedAtActionResult> Create(Guid roomId, AddTaskViewModel viewModel)
         {
             var addedTask =
@@ -66,6 +80,8 @@ namespace Tasks.Api.Controllers
 
         [HttpPut("{taskId:guid}")]
         [SwaggerResponse(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status403Forbidden)]
+        [SwaggerResponse(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Update(Guid roomId, Guid taskId, AddTaskViewModel viewModel)
         {
             await _roomTaskService.UpdateTask(roomId, taskId, viewModel, UserService.GetCurrentUserId(HttpContext));
@@ -74,6 +90,8 @@ namespace Tasks.Api.Controllers
 
         [HttpDelete("{taskId:guid}")]
         [SwaggerResponse(StatusCodes.Status200OK)]
+        [SwaggerResponse(StatusCodes.Status403Forbidden)]
+        [SwaggerResponse(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> Delete(Guid roomId, Guid taskId)
         {
             await _roomTaskService.DeleteTask(roomId, taskId, UserService.GetCurrentUserId(HttpContext));

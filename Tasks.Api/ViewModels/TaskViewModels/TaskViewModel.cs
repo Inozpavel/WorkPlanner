@@ -11,6 +11,8 @@ namespace Tasks.Api.ViewModels.TaskViewModels
         public string TaskContent { get; set; }
 
         public string Details { get; set; }
+        
+        public bool IsCompleted { get; set; }
 
         public DateTime TaskCreationTime { get; set; } = DateTime.Now;
 
