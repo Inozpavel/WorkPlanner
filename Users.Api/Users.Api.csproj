@@ -27,5 +27,10 @@
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>
+	
+	<PropertyGroup>
+		<IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
 
 </Project>

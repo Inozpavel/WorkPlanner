@@ -24,6 +24,7 @@
 
 	<PropertyGroup>
 		<IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 	
 </Project>

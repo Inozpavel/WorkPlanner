@@ -10,18 +10,32 @@ using Tasks.Api.ViewModels.RoleViewModels;
 
 namespace Tasks.Api.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [ApiController]
     [Route("api/")]
+    [SwaggerTag("Everything about roles")]
     public class RolesController : ControllerBase
     {
         private readonly RoleService _roleService;
 
         public RolesController(RoleService roleService) => _roleService = roleService;
 
+        /// <summary>
+        /// Finds all roles in rooms
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("[controller]")]
         [SwaggerResponse(StatusCodes.Status200OK, type: typeof(List<RoleViewModel>))]
         public async Task<ActionResult<List<string>>> AllRoles() => Ok(await _roleService.AllRoles());
 
+        /// <summary>
+        /// Updates user role in room
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPut("rooms/{roomId:guid}/[controller]")]
         [SwaggerResponse(StatusCodes.Status200OK)]
@@ -34,6 +48,11 @@ namespace Tasks.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Returns information about user role in room 
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpGet("rooms/{roomId:guid}/[controller]")]
         [SwaggerResponse(StatusCodes.Status200OK, type: typeof(List<UserWithRoleViewModel>))]

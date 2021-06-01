@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using IdentityServer4.AccessTokenValidation;
 using MassTransit;
@@ -43,7 +44,7 @@ namespace Tasks.Api
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "RoomsApi",
-                    Description = "Service for managing rooms and tasks in rooms",
+                    Description = "Service for managing rooms and tasks",
                     Version = "v1",
 
                     Contact = new OpenApiContact
@@ -83,6 +84,10 @@ namespace Tasks.Api
                         new List<string>()
                     }
                 });
+                
+                string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                string filePath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(filePath);
             });
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());

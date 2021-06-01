@@ -11,20 +11,30 @@ using Users.Data.Entities;
 
 namespace Users.Api.Controllers
 {
+    /// <summary>
+    /// Operations about users
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
+    [SwaggerTag("Operations about users")]
     public class AccountsController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
 
         private readonly UserService _userService;
 
+        /// <inheritdoc />
         public AccountsController(UserService userService, UserManager<User> userManager)
         {
             _userService = userService;
             _userManager = userManager;
         }
 
+        /// <summary>
+        /// Registers a new user
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [HttpPost("[action]")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "If data is invalid", typeof(ValidationProblemDetails))]
@@ -34,6 +44,12 @@ namespace Users.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Confirms email for user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         [HttpGet("confirm-email/{userId}/{token}")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status404NotFound)]
@@ -54,6 +70,11 @@ namespace Users.Api.Controllers
             return Ok("Ok");
         }
 
+        /// <summary>
+        /// Resends confirmation mail for registered email
+        /// </summary>
+        /// <param name="registeredEmail"></param>
+        /// <returns></returns>
         [HttpGet("resend-confirmation-mail")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "If email if not registered", typeof(ProblemDetails))]
@@ -76,6 +97,11 @@ namespace Users.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Returns user profile information
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPut("[action]")]
         [SwaggerResponse(StatusCodes.Status200OK)]

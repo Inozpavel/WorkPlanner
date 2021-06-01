@@ -11,16 +11,25 @@ using Tasks.Api.ViewModels.RoomViewModels;
 
 namespace Tasks.Api.Controllers
 {
+    /// <summary>
+    /// Everything about rooms
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "If user is unauthorized")]
+    [SwaggerTag("Everything about rooms")]
     public class RoomsController : ControllerBase
     {
         private readonly RoomService _roomService;
 
+        /// <inheritdoc />
         public RoomsController(RoomService roomService) => _roomService = roomService;
 
+        /// <summary>
+        /// Finds all rooms for user
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status204NoContent, "If user hasn`t any rooms")]
@@ -32,6 +41,12 @@ namespace Tasks.Api.Controllers
             return Ok(rooms);
         }
 
+        /// <summary>
+        /// Updates room information by id
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <param name="roomId"></param>
+        /// <returns></returns>
         [HttpPut("{roomId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status404NotFound, "If id is incorrect", typeof(ProblemDetails))]
@@ -42,6 +57,11 @@ namespace Tasks.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Creates new room for user
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [SwaggerResponse(StatusCodes.Status201Created, Type = typeof(RoomViewModel))]
         public async Task<CreatedAtActionResult> Create(AddOrUpdateRoomViewModel viewModel)
@@ -50,6 +70,11 @@ namespace Tasks.Api.Controllers
             return CreatedAtAction(nameof(Find), new {roomId = createdRoom.RoomId}, createdRoom);
         }
 
+        /// <summary>
+        /// Deletes room by id
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <returns></returns>
         [HttpDelete("{roomId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status404NotFound, "If id is incorrect", typeof(ProblemDetails))]
@@ -60,6 +85,11 @@ namespace Tasks.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Finds room by id
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <returns></returns>
         [HttpGet("{roomId:guid}")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status404NotFound, "If id is incorrect", typeof(ProblemDetails))]
@@ -71,6 +101,11 @@ namespace Tasks.Api.Controllers
             return Ok(room);
         }
 
+        /// <summary>
+        /// Joins user to new room by id
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <returns></returns>
         [HttpGet("join/{roomId:guid}")]
         [SwaggerResponse(StatusCodes.Status200OK, type: typeof(RoomViewModel))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "If link is incorrect", typeof(ProblemDetails))]

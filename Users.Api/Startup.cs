@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using IdentityServer4.AccessTokenValidation;
 using MassTransit;
@@ -45,9 +46,9 @@ namespace Users.Api
 
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "IdentityApi",
+                    Title = "UsersApi",
                     Version = "v1",
-                    Description = "IdentityApi",
+                    Description = "Service for register users, email confirm and update profile information",
 
                     Contact = new OpenApiContact
                     {
@@ -86,6 +87,10 @@ namespace Users.Api
                         new List<string>()
                     }
                 });
+
+                string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                string filePath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(filePath);
             });
 
             services.AddAuthentication(options =>

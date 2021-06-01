@@ -12,15 +12,25 @@ using Tasks.Api.ViewModels.UserViewModel;
 
 namespace Tasks.Api.Controllers
 {
+    /// <summary>
+    /// Everything about tasks
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/room/{roomId:guid}/[controller]")]
+    [SwaggerTag("Everything about tasks")]
     public class TasksController : ControllerBase
     {
         private readonly RoomTaskService _roomTaskService;
 
+        /// <inheritdoc />
         public TasksController(RoomTaskService roomTaskService) => _roomTaskService = roomTaskService;
 
+        /// <summary>
+        /// Finds all tasks in room
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <returns></returns>
         [HttpGet]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status204NoContent)]
@@ -35,6 +45,12 @@ namespace Tasks.Api.Controllers
             return Ok(tasks);
         }
 
+        /// <summary>
+        /// Finds task in room by id
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <param name="taskId"></param>
+        /// <returns></returns>
         [HttpGet("{taskId:guid}")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status403Forbidden)]
@@ -47,6 +63,12 @@ namespace Tasks.Api.Controllers
             return Ok(task);
         }
 
+        /// <summary>
+        /// Finds creator of the task in room
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <param name="taskId"></param>
+        /// <returns></returns>
         [HttpGet("{taskId:guid}/creator")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status403Forbidden)]
@@ -58,6 +80,12 @@ namespace Tasks.Api.Controllers
             return Ok(creator);
         }
 
+        /// <summary>
+        /// Marks task completed
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <param name="taskId"></param>
+        /// <returns></returns>
         [HttpGet("{taskId:guid}/complete")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status403Forbidden)]
@@ -66,6 +94,12 @@ namespace Tasks.Api.Controllers
             await _roomTaskService.CompleteTask(roomId, taskId, UserService.GetCurrentUserId(HttpContext)));
 
 
+        /// <summary>
+        /// Creates task
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [SwaggerResponse(StatusCodes.Status201Created)]
         [SwaggerResponse(StatusCodes.Status403Forbidden)]
@@ -78,6 +112,13 @@ namespace Tasks.Api.Controllers
                 addedTask);
         }
 
+        /// <summary>
+        /// Updates task by id
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <param name="taskId"></param>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [HttpPut("{taskId:guid}")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status403Forbidden)]
@@ -88,6 +129,12 @@ namespace Tasks.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Deletes task by id
+        /// </summary>
+        /// <param name="roomId"></param>
+        /// <param name="taskId"></param>
+        /// <returns></returns>
         [HttpDelete("{taskId:guid}")]
         [SwaggerResponse(StatusCodes.Status200OK)]
         [SwaggerResponse(StatusCodes.Status403Forbidden)]
