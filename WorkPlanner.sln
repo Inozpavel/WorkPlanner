@@ -8,17 +8,30 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tasks.Api", "Tasks.Api\Tasks.Api.csproj", "{73435E4E-F00F-406F-B2D5-84D5F325CAB4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{E185E3F2-D4C4-4DC7-B5C9-2D348127DE1B}"
-	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
-		docker-compose.production.yml = docker-compose.production.yml
-		docker-compose.yml = docker-compose.yml
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway.Ocelot", "ApiGateway.Ocelot\ApiGateway.Ocelot.csproj", "{7EF74333-9A1F-4B9D-BC50-9F5E12F63913}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users.Api", "Users.Api\Users.Api.csproj", "{7C96A2F2-4300-4B7D-B6E4-7E8AA1AE2043}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users.Data", "Users.Data\Users.Data.csproj", "{74BA2DE6-67DA-45EC-86EF-58AC35A9363E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub", "GitHub", "{93FCA147-7AE8-433E-8134-8AAC817A26DF}"
+ProjectSection(SolutionItems) = preProject
+	.gitignore = .gitignore
+	.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{73A79EE0-7342-41E6-85DB-B1B9B3DC0CC4}"
+ProjectSection(SolutionItems) = preProject
+	docker-compose.yml = docker-compose.yml
+	docker-compose.production.yml = docker-compose.production.yml
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{21571A73-9228-4DDF-AB11-5A5C58E26756}"
+ProjectSection(SolutionItems) = preProject
+	README.md = README.md
+	Architecture.png = Architecture.png
+EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +71,9 @@ Global
 		{7EF74333-9A1F-4B9D-BC50-9F5E12F63913} = {E185E3F2-D4C4-4DC7-B5C9-2D348127DE1B}
 		{7C96A2F2-4300-4B7D-B6E4-7E8AA1AE2043} = {E185E3F2-D4C4-4DC7-B5C9-2D348127DE1B}
 		{74BA2DE6-67DA-45EC-86EF-58AC35A9363E} = {E185E3F2-D4C4-4DC7-B5C9-2D348127DE1B}
+		{93FCA147-7AE8-433E-8134-8AAC817A26DF} = {E185E3F2-D4C4-4DC7-B5C9-2D348127DE1B}
+		{73A79EE0-7342-41E6-85DB-B1B9B3DC0CC4} = {E185E3F2-D4C4-4DC7-B5C9-2D348127DE1B}
+		{21571A73-9228-4DDF-AB11-5A5C58E26756} = {E185E3F2-D4C4-4DC7-B5C9-2D348127DE1B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B818B95-1445-4720-941B-3139FBB86C4C}
