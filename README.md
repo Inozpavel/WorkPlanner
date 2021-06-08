@@ -70,7 +70,7 @@ Packages
 - [AspNetCore.Identity](https://docs.microsoft.com/ru-ru/aspnet/identity/overview/getting-started/introduction-to-aspnet-identity)
 
 ## Project Architecture
-[[!Architecture](Architecture.png)]
+![Architecture](Architecture.png)
 
 Patterns
 - UnitOfWork
