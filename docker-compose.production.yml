@@ -26,19 +26,19 @@ x-rabbitmq-conection: &rabbitmq-connection
 
 x-identity-server: &identity-server
   IdentityServer:Authority: "http://identity_server"
-  IdentityServer:TokenUrl: "http://mc.icomm.pro:4000/gateway/identity/connect/token"
+  IdentityServer:TokenUrl: "http://194.146.113.42:4000/gateway/identity/connect/token"
 
 x-identity-server-swagger-client: &swagger-client
   IdentityServer:ClientId: "SwaggerApp"
   IdentityServer:Secret: &swagger-client-secret "SwaggerAppSecret"
 
 x-identity-server-gateway:
-  Origin: &gateway-origin "http://mc.icomm.pro:4000"
+  Origin: &gateway-origin "http://194.146.113.42:4000"
   Secret: &gateway-secret "GatewaySecret"
   ClientId: &gateway-client-id "Gateway"
 
 x-mails: &mails
-  Gateway:Host: "http://mc.icomm.pro:4000"
+  Gateway:Host: "http://194.146.113.42:4000"
 
 services:
 
