@@ -1,15 +1,17 @@
 # Work planner Backend Web API
 
-This is my second project in which i studied web api with microservice architecture.
+Backend part for my project "Work planner"
 
-The main idea of the project is a work execution planner.
-The security system is made using identity server 4. There is a system of users with registration, authorization.
-After registration, the user will be sent an email for confirmation.
+See also [frontend part](https://github.com/Inozpavel/WorkPlanner.Android)
 
-Users can create rooms and tasks within them.
-They can then invite other users to join their rooms. There is a role system inside the rooms.
+The main idea of the project is a work execution planner. Users can create rooms and tasks within them. They can then
+invite other users to join their rooms or join existing room then issue tasks and view their statuses.
 
-All access to microservices is implemented through the api gateway. Also, each microservice is located in a container.
+The security system is made using identity server 4. There are registration, authorization systems. After registration,
+the user will be sent an email for confirmation. Users have roles inside the rooms.
+
+It is microservice architecture project. All access to microservices is implemented through the api gateway. Also, each
+microservice is located in a docker container.
 
 | Status | Master | Develop |
 | ------ | ------ | ------- |
@@ -48,31 +50,40 @@ Main framework
 - [ASP.Net Core](https://dotnet.microsoft.com/apps/aspnet)
 
 Database
+
 - [PostgreSQL](https://www.postgresql.org/)
 
 Security
+
 - [Identity Server 4](https://identityserver4.readthedocs.io/en/latest/)
 
 ORM
+
 - [Entity Framework Core for PostgreSQL](https://docs.microsoft.com/ru-ru/ef/core/)
 
 API Gateway
+
 - [Ocelot](https://github.com/ThreeMammals/Ocelot)
 
 Message broker
+
 - [RabbitMQ (MassTransit)](https://masstransit-project.com/usage/transports/rabbitmq.html)
 
 Documentation
+
 - [Swagger](https://swagger.io/)
 
 Packages
+
 - [AutoMapper](https://github.com/AutoMapper/AutoMapper)
 - [AspNetCore.Identity](https://docs.microsoft.com/ru-ru/aspnet/identity/overview/getting-started/introduction-to-aspnet-identity)
 
 ## Project Architecture
+
 ![Architecture](Architecture.png)
 
 Patterns
+
 - UnitOfWork
 - Repository
-- SOA
+- Microservices architecture
