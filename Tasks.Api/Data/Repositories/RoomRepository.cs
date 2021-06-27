@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Tasks.Api.Data.Interfaces;
 using Tasks.Api.Entities;
 
-namespace Tasks.Api.Data
+namespace Tasks.Api.Data.Repositories
 {
-    public class RoomRepository : Repository<Room>
+    public class RoomRepository : Repository<Room>, IRoomRepository
     {
         public RoomRepository(ApplicationContext context) : base(context)
         {

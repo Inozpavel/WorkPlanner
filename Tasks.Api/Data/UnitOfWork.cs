@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Tasks.Api.Data.Interfaces;
+using Tasks.Api.Data.Repositories;
 
 namespace Tasks.Api.Data
 {
@@ -6,19 +8,19 @@ namespace Tasks.Api.Data
     {
         private readonly ApplicationContext _context;
 
-        private RoomRepository? _roomRepository;
+        private IRoomRepository? _roomRepository;
 
-        private RoomRoleRepository? _roomRoleRepository;
+        private IRoomRoleRepository? _roomRoleRepository;
 
-        private RoomTaskRepository? _roomTaskRepository;
+        private IRoomTaskRepository? _roomTaskRepository;
 
         public UnitOfWork(ApplicationContext context) => _context = context;
 
-        public RoomRepository RoomRepository => _roomRepository ??= new RoomRepository(_context);
+        public IRoomRepository RoomRepository => _roomRepository ??= new RoomRepository(_context);
 
-        public RoomRoleRepository RoomRoleRepository => _roomRoleRepository ??= new RoomRoleRepository(_context);
+        public IRoomRoleRepository RoomRoleRepository => _roomRoleRepository ??= new RoomRoleRepository(_context);
 
-        public RoomTaskRepository RoomTaskRepository => _roomTaskRepository ??= new RoomTaskRepository(_context);
+        public IRoomTaskRepository RoomTaskRepository => _roomTaskRepository ??= new RoomTaskRepository(_context);
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
     }

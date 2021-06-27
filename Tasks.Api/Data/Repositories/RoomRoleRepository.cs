@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Tasks.Api.Data.Interfaces;
 using Tasks.Api.Entities;
 
-namespace Tasks.Api.Data
+namespace Tasks.Api.Data.Repositories
 {
-    public class RoomRoleRepository : Repository<RoomRole>
+    public class RoomRoleRepository : Repository<RoomRole>, IRoomRoleRepository
     {
         public RoomRoleRepository(ApplicationContext context) : base(context)
         {
