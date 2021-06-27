@@ -11,7 +11,7 @@ using Tasks.Api.ViewModels.RoleViewModels;
 namespace Tasks.Api.Controllers
 {
     /// <summary>
-    /// 
+    ///     Everything about roles
     /// </summary>
     [ApiController]
     [Route("api/")]
@@ -23,7 +23,7 @@ namespace Tasks.Api.Controllers
         public RolesController(RoleService roleService) => _roleService = roleService;
 
         /// <summary>
-        /// Finds all roles in rooms
+        ///     Finds all roles in rooms
         /// </summary>
         /// <returns></returns>
         [HttpGet("[controller]")]
@@ -31,7 +31,7 @@ namespace Tasks.Api.Controllers
         public async Task<ActionResult<List<string>>> AllRoles() => Ok(await _roleService.AllRoles());
 
         /// <summary>
-        /// Updates user role in room
+        ///     Updates user role in room
         /// </summary>
         /// <param name="roomId"></param>
         /// <param name="viewModel"></param>
@@ -49,7 +49,7 @@ namespace Tasks.Api.Controllers
         }
 
         /// <summary>
-        /// Returns information about user role in room 
+        ///     Returns information about user role in room
         /// </summary>
         /// <param name="roomId"></param>
         /// <returns></returns>

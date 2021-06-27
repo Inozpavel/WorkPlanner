@@ -12,7 +12,7 @@ using Users.Data.Entities;
 namespace Users.Api.Controllers
 {
     /// <summary>
-    /// Operations about users
+    ///     Operations about users
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
@@ -31,7 +31,7 @@ namespace Users.Api.Controllers
         }
 
         /// <summary>
-        /// Registers a new user
+        ///     Registers a new user
         /// </summary>
         /// <param name="viewModel"></param>
         /// <returns></returns>
@@ -45,7 +45,7 @@ namespace Users.Api.Controllers
         }
 
         /// <summary>
-        /// Confirms email for user
+        ///     Confirms email for user
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="token"></param>
@@ -71,7 +71,7 @@ namespace Users.Api.Controllers
         }
 
         /// <summary>
-        /// Resends confirmation mail for registered email
+        ///     Resends confirmation mail for registered email
         /// </summary>
         /// <param name="registeredEmail"></param>
         /// <returns></returns>
@@ -98,7 +98,7 @@ namespace Users.Api.Controllers
         }
 
         /// <summary>
-        /// Returns user profile information
+        ///     Returns user profile information
         /// </summary>
         /// <param name="viewModel"></param>
         /// <returns></returns>

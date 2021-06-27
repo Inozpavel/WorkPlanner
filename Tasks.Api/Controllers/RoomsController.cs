@@ -12,7 +12,7 @@ using Tasks.Api.ViewModels.RoomViewModels;
 namespace Tasks.Api.Controllers
 {
     /// <summary>
-    /// Everything about rooms
+    ///     Everything about rooms
     /// </summary>
     [Authorize]
     [ApiController]
@@ -27,7 +27,7 @@ namespace Tasks.Api.Controllers
         public RoomsController(RoomService roomService) => _roomService = roomService;
 
         /// <summary>
-        /// Finds all rooms for user
+        ///     Finds all rooms for user
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -42,7 +42,7 @@ namespace Tasks.Api.Controllers
         }
 
         /// <summary>
-        /// Updates room information by id
+        ///     Updates room information by id
         /// </summary>
         /// <param name="viewModel"></param>
         /// <param name="roomId"></param>
@@ -58,7 +58,7 @@ namespace Tasks.Api.Controllers
         }
 
         /// <summary>
-        /// Creates new room for user
+        ///     Creates new room for user
         /// </summary>
         /// <param name="viewModel"></param>
         /// <returns></returns>
@@ -71,7 +71,7 @@ namespace Tasks.Api.Controllers
         }
 
         /// <summary>
-        /// Deletes room by id
+        ///     Deletes room by id
         /// </summary>
         /// <param name="roomId"></param>
         /// <returns></returns>
@@ -86,7 +86,7 @@ namespace Tasks.Api.Controllers
         }
 
         /// <summary>
-        /// Finds room by id
+        ///     Finds room by id
         /// </summary>
         /// <param name="roomId"></param>
         /// <returns></returns>
@@ -102,7 +102,7 @@ namespace Tasks.Api.Controllers
         }
 
         /// <summary>
-        /// Joins user to new room by id
+        ///     Joins user to new room by id
         /// </summary>
         /// <param name="roomId"></param>
         /// <returns></returns>

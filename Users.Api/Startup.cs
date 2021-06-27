@@ -115,7 +115,7 @@ namespace Users.Api
             services.AddControllers();
 
             services.AddMassTransit(x =>
-                x.UsingRabbitMq((context, configurator) =>
+                x.UsingRabbitMq((_, configurator) =>
                 {
                     configurator.Host(_configuration["MassTransit:Host"],
                         _configuration["MassTransit:VirtualHost"], options =>

@@ -13,7 +13,7 @@ using Tasks.Api.ViewModels.UserViewModel;
 namespace Tasks.Api.Controllers
 {
     /// <summary>
-    /// Everything about tasks
+    ///     Everything about tasks
     /// </summary>
     [Authorize]
     [ApiController]
@@ -27,7 +27,7 @@ namespace Tasks.Api.Controllers
         public TasksController(RoomTaskService roomTaskService) => _roomTaskService = roomTaskService;
 
         /// <summary>
-        /// Finds all tasks in room
+        ///     Finds all tasks in room
         /// </summary>
         /// <param name="roomId"></param>
         /// <returns></returns>
@@ -46,7 +46,7 @@ namespace Tasks.Api.Controllers
         }
 
         /// <summary>
-        /// Finds task in room by id
+        ///     Finds task in room by id
         /// </summary>
         /// <param name="roomId"></param>
         /// <param name="taskId"></param>
@@ -64,7 +64,7 @@ namespace Tasks.Api.Controllers
         }
 
         /// <summary>
-        /// Finds creator of the task in room
+        ///     Finds creator of the task in room
         /// </summary>
         /// <param name="roomId"></param>
         /// <param name="taskId"></param>
@@ -81,7 +81,7 @@ namespace Tasks.Api.Controllers
         }
 
         /// <summary>
-        /// Marks task completed
+        ///     Marks task completed
         /// </summary>
         /// <param name="roomId"></param>
         /// <param name="taskId"></param>
@@ -95,7 +95,7 @@ namespace Tasks.Api.Controllers
 
 
         /// <summary>
-        /// Creates task
+        ///     Creates task
         /// </summary>
         /// <param name="roomId"></param>
         /// <param name="viewModel"></param>
@@ -113,7 +113,7 @@ namespace Tasks.Api.Controllers
         }
 
         /// <summary>
-        /// Updates task by id
+        ///     Updates task by id
         /// </summary>
         /// <param name="roomId"></param>
         /// <param name="taskId"></param>
@@ -130,7 +130,7 @@ namespace Tasks.Api.Controllers
         }
 
         /// <summary>
-        /// Deletes task by id
+        ///     Deletes task by id
         /// </summary>
         /// <param name="roomId"></param>
         /// <param name="taskId"></param>

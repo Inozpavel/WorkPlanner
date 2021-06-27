@@ -11,7 +11,7 @@ namespace Tasks.Api.MassTransit
     public class ProfileUpdatedConsumer : IConsumer<ProfileUpdated>
     {
         private readonly ApplicationContext _applicationContext;
-        
+
         private readonly IMapper _mapper;
 
         public ProfileUpdatedConsumer(IMapper mapper, ApplicationContext applicationContext)

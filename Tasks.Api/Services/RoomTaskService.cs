@@ -38,9 +38,10 @@ namespace Tasks.Api.Services
                 throw new NotFoundApiException(AppExceptions.TaskInRoomNotFoundException);
 
             await _userService.ThrowIfNotRoomMember(roomId, userId);
-            
+
             return _mapper.Map<TaskViewModel>(task);
         }
+
         public async Task<TaskViewModel?> CompleteTask(Guid roomId, Guid taskId, Guid userId)
         {
             var task = await _unitOfWork.RoomTaskRepository.Find(x => x.RoomTaskId == taskId);
@@ -131,7 +132,7 @@ namespace Tasks.Api.Services
             var userInRoom = await _unitOfWork.RoomRepository.FindUserInRoom(roomId, task.TaskCreatorId);
             if (userInRoom == null)
             {
-                throw new NotFoundApiException(AppExceptions.CreatorNotFound); 
+                throw new NotFoundApiException(AppExceptions.CreatorNotFound);
             }
 
             return _mapper.Map<UserFullNameViewModel>(userInRoom.User);

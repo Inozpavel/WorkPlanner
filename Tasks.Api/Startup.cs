@@ -84,7 +84,7 @@ namespace Tasks.Api
                         new List<string>()
                     }
                 });
-                
+
                 string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 string filePath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(filePath);
