@@ -5,8 +5,8 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>WorkPlanner.Users.Data</PackageId>
 		<Authors>Inozpavel</Authors>
-		<Title>Microsoft identity entities</Title>
-		<RepositoryUrl>https://github.com/Inozpavel/WorkPlanner</RepositoryUrl>
+		<Title>Microsoft identity entities and Mass Transit messages</Title>
+		<RepositoryUrl>https://github.com/Inozpavel/WorkPlanner.WebApi</RepositoryUrl>
 		<RepositoryType>GitHub</RepositoryType>
 		<PackageVersion>1.0.3</PackageVersion>
 	</PropertyGroup>
