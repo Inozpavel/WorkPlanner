@@ -59,7 +59,7 @@ Security
 
 ORM
 
-- [Entity Framework Core for PostgreSQL](https://docs.microsoft.com/ru-ru/ef/core/)
+- [Entity Framework Core for PostgreSQL](https://www.nuget.org/packages?q=postgre)
 
 API Gateway
 
@@ -76,7 +76,7 @@ Documentation
 Packages
 
 - [AutoMapper](https://github.com/AutoMapper/AutoMapper)
-- [AspNetCore.Identity](https://docs.microsoft.com/ru-ru/aspnet/identity/overview/getting-started/introduction-to-aspnet-identity)
+- [AspNetCore.Identity](https://www.nuget.org/packages/Microsoft.AspNetCore.Identity.EntityFrameworkCore/)
 
 ## Project Architecture
 
